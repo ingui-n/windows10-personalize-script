@@ -11,9 +11,15 @@ dependencies:
   '@nut-tree/template-matcher':
     specifier: ^2.0.0
     version: 2.0.0(@nut-tree/nut-js@3.1.2)
+  gkm:
+    specifier: ^0.2.0
+    version: 0.2.0
   node-abort-controller:
     specifier: ^3.1.1
     version: 3.1.1
+  node-global-key-listener:
+    specifier: ^0.1.1
+    version: 0.1.1
 
 packages:
 
@@ -464,7 +470,6 @@ packages:
 
   /@nut-tree/template-matcher@2.0.0(@nut-tree/nut-js@3.1.2):
     resolution: {integrity: sha512-6aJzDwXV8Wsr6C5nw1fstS2T50xiOvJ/Ec6n5b9pJXQGQk96aCskOyoC3QLt/HljBJQM0b+OuaAOC24IZwCEhw==}
-    cpu: [x64, ia32]
     os: [linux, darwin, win32]
     peerDependencies:
       '@nut-tree/nut-js': '>=3.0.0'
@@ -614,6 +619,10 @@ packages:
       once: 1.4.0
     dev: false
 
+  /eventemitter2@0.4.14:
+    resolution: {integrity: sha512-K7J4xq5xAD5jHsGM5ReWXRTFa3JRGofHiMcVgQ8PRwgWxzjHpMWCIzsmyf60+mh8KLsqYPcjUMa0AC4hd6lPyQ==}
+    dev: false
+
   /execa@1.0.0:
     resolution: {integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==}
     engines: {node: '>=6'}
@@ -682,6 +691,12 @@ packages:
 
   /github-from-package@0.0.0:
     resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==}
+    dev: false
+
+  /gkm@0.2.0:
+    resolution: {integrity: sha512-Lp8cZ90/PoPnn9aCqXWpnq8JuxgqveivNHO8nveDjH+ShUUNmY6x4IZuM0hTBqMk+oJAxxmrS//iw6vXOQPSZw==}
+    dependencies:
+      eventemitter2: 0.4.14
     dev: false
 
   /global@4.4.0:
@@ -846,6 +861,12 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /node-global-key-listener@0.1.1:
+    resolution: {integrity: sha512-xPuMrjVDJSMWg1VchV4ynrE3I1nCtk84NRZWRr4WiPBAeauBEvmE7bMMmvLZbS7F5Z+xdK6YIhazhervyBINLw==}
+    dependencies:
+      sudo-prompt: 9.2.1
+    dev: false
 
   /npm-run-path@2.0.2:
     resolution: {integrity: sha512-lJxZYlT4DW/bRUtFh1MQIWqmLwQfAxnqWG4HhEdjMlkrJYnJn0Jrr2u3mgxqaWsdiBc76TYkTG/mhrnYTuzfHw==}
@@ -1120,6 +1141,10 @@ packages:
     dependencies:
       '@tokenizer/token': 0.3.0
       peek-readable: 4.1.0
+    dev: false
+
+  /sudo-prompt@9.2.1:
+    resolution: {integrity: sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==}
     dev: false
 
   /tar-fs@2.1.1:

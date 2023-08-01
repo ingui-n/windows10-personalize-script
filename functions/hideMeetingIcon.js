@@ -1,7 +1,7 @@
 import {centerOf, Key, mouse, straightTo} from "@nut-tree/nut-js";
 import {findInRegion, screenHeight, screenWidth, typeMultipleKeys} from "../globals.js";
 
-const hideMeetingButton = async () => {
+const hideMeetingIcon = async () => {
   const region = await findInRegion({
     left: Math.floor(screenWidth / 2),
     top: screenHeight - 50,
@@ -26,4 +26,4 @@ const hideMeetingButton = async () => {
   return true;
 };
 
-export default hideMeetingButton;
+export default hideMeetingIcon;

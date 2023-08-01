@@ -1,7 +1,5 @@
 import {
-  centerOf,
   imageResource,
-  Key,
   keyboard,
   mouse,
   OptionalSearchParameters,
@@ -11,6 +9,8 @@ import {
   sleep, straightTo
 } from "@nut-tree/nut-js";
 import {AbortController} from "node-abort-controller";
+import {log} from "./logger.js";
+import {GlobalKeyboardListener} from "node-global-key-listener";
 
 const screenWidth = await screen.width();
 const screenHeight = await screen.height();
@@ -48,12 +48,21 @@ const findInRegion = async ({
   }
 };
 
-const findWithTimeout = async () => {
-
-};
-
 const resetMouse = async () => {
   await mouse.move(straightTo(new Point(10000, 10000)));
 };
 
-export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, findWithTimeout, resetMouse};
+const initStopListener = async () => {
+  const listener = new GlobalKeyboardListener();
+
+  await listener.addListener((event, down) => {
+    if (event.rawKey._nameRaw === 'VK_PAUSE') {
+      log({message: 'Stopped by Break listener'});
+      process.exit();
+    }
+  });
+
+  await listener.start();
+};
+
+export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, resetMouse, initStopListener};
