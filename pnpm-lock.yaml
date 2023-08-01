@@ -464,6 +464,7 @@ packages:
 
   /@nut-tree/template-matcher@2.0.0(@nut-tree/nut-js@3.1.2):
     resolution: {integrity: sha512-6aJzDwXV8Wsr6C5nw1fstS2T50xiOvJ/Ec6n5b9pJXQGQk96aCskOyoC3QLt/HljBJQM0b+OuaAOC24IZwCEhw==}
+    cpu: [x64, ia32]
     os: [linux, darwin, win32]
     peerDependencies:
       '@nut-tree/nut-js': '>=3.0.0'
@@ -479,6 +480,12 @@ packages:
   /@types/node@16.9.1:
     resolution: {integrity: sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==}
     dev: false
+
+  /@types/node@20.4.5:
+    resolution: {integrity: sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /ansi-regex@2.1.1:
     resolution: {integrity: sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA==}
@@ -885,7 +892,7 @@ packages:
       npmlog: 4.1.2
       prebuild-install: 6.1.4
     optionalDependencies:
-      '@types/node': 16.9.1
+      '@types/node': 20.4.5
     dev: false
 
   /p-finally@1.0.0:

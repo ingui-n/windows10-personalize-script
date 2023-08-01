@@ -1,11 +1,24 @@
-import {imageResource, Key, keyboard, mouse, OptionalSearchParameters, Point, Region, screen} from "@nut-tree/nut-js";
+import {
+  imageResource,
+  Key,
+  keyboard,
+  mouse,
+  OptionalSearchParameters,
+  Point,
+  Region,
+  screen,
+  sleep
+} from "@nut-tree/nut-js";
 import {AbortController} from "node-abort-controller";
 
 const screenWidth = await screen.width();
 const screenHeight = await screen.height();
 
-const typeMultipleKeys = async (...keys) => {
-  keys.map(async key => await keyboard.type(key));
+const typeMultipleKeys = async ({keys = [], sleepTime = 0}) => {
+  for (const key of keys) {
+    await sleep(sleepTime);
+    await keyboard.type(key)
+  }
 };
 
 const findInRegion = async ({
@@ -25,9 +38,9 @@ const findInRegion = async ({
 
   try {
     if (timeout > 0) {
-      return screen.waitFor(imageResource(imagePath), timeout);
+      return await screen.waitFor(imageResource(imagePath), timeout, 10, config);
     } else {
-      return screen.find(imageResource(imagePath), config);
+      return await screen.find(imageResource(imagePath), config);
     }
   } catch (e) {
     return null;
