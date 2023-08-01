@@ -14,9 +14,6 @@ dependencies:
   node-abort-controller:
     specifier: ^3.1.1
     version: 3.1.1
-  opencv4nodejs-prebuilt:
-    specifier: ^5.3.4
-    version: 5.3.4
 
 packages:
 
@@ -881,18 +878,6 @@ packages:
 
   /opencv4nodejs-prebuilt@5.3.3:
     resolution: {integrity: sha512-c9n4bLoamHLwafqCR6W4Xh5O/35IJ2A01pWbW/4SVgYJDAhGAW/FrZw0q4VwUPxEe1cXZgr+Wy5HZUQIotkZdg==}
-    requiresBuild: true
-    dependencies:
-      nan: 2.17.0
-      native-node-utils: 0.2.7
-      npmlog: 4.1.2
-      prebuild-install: 6.1.4
-    optionalDependencies:
-      '@types/node': 16.9.1
-    dev: false
-
-  /opencv4nodejs-prebuilt@5.3.4:
-    resolution: {integrity: sha512-YaSTnM7+JJnz65DSkSkyLqpfXe+4N6UOiI0kbMpQQ8ii2HtIKpeILIpMErxKWd2E+/BOmGRj10/Iy6M2KXLEXQ==}
     requiresBuild: true
     dependencies:
       nan: 2.17.0

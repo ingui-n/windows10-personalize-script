@@ -8,10 +8,10 @@ import turnOffTheFunctionWithOneFinger from "./functions/turnOffTheFunctionWithO
 mouse.config.mouseSpeed = Infinity;
 
 const start = async () => {
-    await hideSearchIcon();
-    // await hideMeetingButton();
-    // await hideTasksIcon();
-    await turnOffTheFunctionWithOneFinger();
+  await hideSearchIcon();
+  // await hideMeetingButton();
+  // await hideTasksIcon();
+  await turnOffTheFunctionWithOneFinger();
 
 };
 

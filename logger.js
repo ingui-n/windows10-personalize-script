@@ -1,5 +1,11 @@
+const fullLog = [];
+
 const log = ({message = '', source = ''}) => {
-    console.log('|| ', source, '|', message);
+  if (source.length === 0) {
+    fullLog.push(`| ${message}`);
+  } else {
+    fullLog.push(`|| ${source} | ${message}`);
+  }
 };
 
-export {log};
+export {log, fullLog};
