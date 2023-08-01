@@ -1,4 +1,5 @@
 import {
+  centerOf,
   imageResource,
   Key,
   keyboard,
@@ -7,7 +8,7 @@ import {
   Point,
   Region,
   screen,
-  sleep
+  sleep, straightTo
 } from "@nut-tree/nut-js";
 import {AbortController} from "node-abort-controller";
 
@@ -51,4 +52,8 @@ const findWithTimeout = async () => {
 
 };
 
-export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, findWithTimeout};
+const resetMouse = async () => {
+  await mouse.move(straightTo(new Point(10000, 10000)));
+};
+
+export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, findWithTimeout, resetMouse};

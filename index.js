@@ -1,17 +1,31 @@
-import {screen, getActiveWindow, getWindows, mouse, singleWord, sleep} from '@nut-tree/nut-js';
+import {mouse} from '@nut-tree/nut-js';
 import '@nut-tree/template-matcher';
 import hideMeetingButton from "./functions/hideMeetingButton.js";
 import hideSearchIcon from "./functions/hideSearchIcon.js";
 import hideTasksIcon from "./functions/hideTasksIcon.js";
-import turnOffTheFunctionWithOneFinger from "./functions/turnOffTheFunctionWithOneFinger.js";
+import {resetMouse} from "./globals.js";
+import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
 
 mouse.config.mouseSpeed = Infinity;
 
 const start = async () => {
-  // await hideSearchIcon();
-  // await hideMeetingButton();
-  // await hideTasksIcon();
-  await turnOffTheFunctionWithOneFinger({});
+  await resetMouse();
+  await hideSearchIcon();
+
+  await resetMouse();
+  await hideMeetingButton();
+
+  await resetMouse();
+  await hideTasksIcon();
+
+  await resetMouse();
+  await stopOneFingerTrigger();
+
+
+
+  //   const region = new Region(Math.floor(screenWidth / 2), screenHeight - 50, Math.floor(screenWidth / 2), 50);
+  // await screen.captureRegion('screenshot.png', region);
+  // return ;
 
 
   // mouse.config.mouseSpeed = 1;

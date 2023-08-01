@@ -1,30 +1,28 @@
-import {
-  imageResource,
-  Key,
-  mouse,
-  OptionalSearchParameters,
-  Point,
-  Region,
-  screen,
-} from "@nut-tree/nut-js";
-import {screenHeight, screenWidth, typeMultipleKeys} from "../globals.js";
-import {AbortController} from "node-abort-controller";
+import {centerOf, Key, mouse, straightTo} from "@nut-tree/nut-js";
+import {findInRegion, screenHeight, screenWidth, typeMultipleKeys} from "../globals.js";
 
 const hideTasksIcon = async () => {
-  const region = new Region(0, Math.floor(screenHeight * .9), screenWidth, Math.floor(screenHeight * .1));
-  const controller = new AbortController();
-  const {signal} = controller;
+  let region = await findInRegion({
+    top: screenHeight - 50,
+    width: Math.floor(screenWidth / 2),
+    height: 50,
+    imagePath: 'images/tasks0.png',
+    confidence: .8
+  });
 
-  const config = new OptionalSearchParameters(region, .9, signal);
-
-  try {
-    await screen.find(imageResource('images/tasks0.png'), config);
-
-    await mouse.move([new Point(screenWidth / 2, screenHeight)]);
+  if (region) {
+    await mouse.move(straightTo(centerOf(region)));
     await mouse.rightClick();
-    await typeMultipleKeys(Key.Down, Key.Down, Key.Down, Key.Enter);
-  } catch (e) {
+
+    await typeMultipleKeys({
+        keys: [
+          Key.Down, Key.Down, Key.Down, Key.Enter
+        ], sleepTime: 100
+      }
+    );
   }
+
+  return true;
 };
 
 export default hideTasksIcon;
