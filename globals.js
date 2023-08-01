@@ -74,4 +74,17 @@ const isWindowSettings = async () => {
   return (windowTitle.startsWith('Nastaven') || windowTitle.startsWith('Settings'));
 };
 
-export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, resetMouse, initStopListener, isWindowSettings};
+const runOnBackGround = (fun) => {
+  setTimeout(fun, 0);
+};
+
+export {
+  screenWidth,
+  screenHeight,
+  typeMultipleKeys,
+  findInRegion,
+  resetMouse,
+  initStopListener,
+  isWindowSettings,
+  runOnBackGround
+};

@@ -1,7 +1,13 @@
 import {Key, keyboard, sleep} from "@nut-tree/nut-js";
 import {isWindowSettings} from "../globals.js";
+import dotenv from 'dotenv';
+import {log} from "../logger.js";
+
+dotenv.config();
 
 const renameComputer = async () => {
+  log({source: 'renameComputer', message: 'Renaming computer'});
+
   if (process.env.DEVICE_NAME === '')
     return false;
 

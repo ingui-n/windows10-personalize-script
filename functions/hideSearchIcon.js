@@ -1,7 +1,10 @@
 import {centerOf, Key, mouse, straightTo} from "@nut-tree/nut-js";
 import {findInRegion, screenHeight, typeMultipleKeys} from "../globals.js";
+import {log} from "../logger.js";
 
 const hideSearchIcon = async () => {
+  log({source: 'hideSearchIcon', message: 'Hide search icon'});
+
   let region = await findInRegion({
     top: screenHeight - 50,
     width: 100,

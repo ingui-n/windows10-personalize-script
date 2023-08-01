@@ -11,6 +11,9 @@ dependencies:
   '@nut-tree/template-matcher':
     specifier: ^2.0.0
     version: 2.0.0(@nut-tree/nut-js@3.1.2)
+  dotenv:
+    specifier: ^16.3.1
+    version: 16.3.1
   node-abort-controller:
     specifier: ^3.1.1
     version: 3.1.1
@@ -652,6 +655,11 @@ packages:
 
   /dom-walk@0.1.2:
     resolution: {integrity: sha512-6QvTW9mrGeIegrFXdtQi9pk7O/nSK6lSdXW2eqUspN5LWD7UTji2Fqw5V2YLjBpHEoU9Xl/eUWNpDeZvoyOv2w==}
+    dev: false
+
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /end-of-stream@1.4.4:

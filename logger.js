@@ -1,11 +1,18 @@
+import fs from 'fs';
+
 const fullLog = [];
 
 const log = ({message = '', source = ''}) => {
+  let log = new Date().toISOString();
+
   if (source.length === 0) {
-    fullLog.push(`| ${message}`);
+    log += ` || ${message}`;
   } else {
-    fullLog.push(`|| ${source} | ${message}`);
+    log += ` || ${source} | ${message}`;
   }
+
+  fullLog.push(log);
+  fs.appendFileSync('logs.txt', log + '\n');
 };
 
 export {log, fullLog};

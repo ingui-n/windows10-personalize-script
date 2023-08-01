@@ -1,7 +1,10 @@
 import {centerOf, Key, mouse, straightTo} from "@nut-tree/nut-js";
 import {findInRegion, screenHeight, screenWidth, typeMultipleKeys} from "../globals.js";
+import {log} from "../logger.js";
 
 const hideMeetingIcon = async () => {
+  log({source: 'hideMeetingIcon', message: 'Hide meeting icon'});
+
   const region = await findInRegion({
     left: Math.floor(screenWidth / 2),
     top: screenHeight - 50,

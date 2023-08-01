@@ -1,9 +1,9 @@
 import {findInRegion, isWindowSettings, typeMultipleKeys} from "../globals.js";
-import {centerOf, getActiveWindow, Key, keyboard, mouse, sleep, straightTo} from "@nut-tree/nut-js";
+import {centerOf, Key, keyboard, mouse, sleep, straightTo} from "@nut-tree/nut-js";
 import {log} from "../logger.js";
 
 const settingsWindowScript = async () => {
-  log({message: 'Turning off trigger for one finger function'});
+  log({source: 'settingsWindowScript', message: 'Turning off trigger for one finger function'});
 
   await keyboard.pressKey(Key.LeftSuper, Key.I);
   await keyboard.releaseKey(Key.LeftSuper, Key.I);
@@ -106,7 +106,5 @@ const settingsWindowScript = async () => {
 
   return true;
 };
-
-
 
 export default settingsWindowScript;

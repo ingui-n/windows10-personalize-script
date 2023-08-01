@@ -1,6 +1,10 @@
 import {PowerShell} from "node-powershell";
+import isChocolateyInstalled from "./isChcolateyInstalled.js";
+import {log} from "../logger.js";
 
 const installChocolatey = async () => {
+  log({source: 'installChocolatey', message: 'Installing Chocolatey'});
+
   if (await isChocolateyInstalled())
     return true;
 
@@ -12,24 +16,6 @@ const installChocolatey = async () => {
     });
 
   return true;
-};
-
-const isChocolateyInstalled = async () => {
-  let isInstalled;
-  const ps = new PowerShell();
-
-  await ps.invoke(`C:\\ProgramData\\chocolatey\\choco.exe`)
-    .then(() => {
-      isInstalled = true;
-    })
-    .catch(() => {
-      isInstalled = false;
-    })
-    .finally(() => {
-      ps.dispose();
-    });
-
-  return isInstalled;
 };
 
 export default installChocolatey;

@@ -1,7 +1,10 @@
 import {centerOf, Key, mouse, straightTo} from "@nut-tree/nut-js";
 import {findInRegion, screenHeight, screenWidth, typeMultipleKeys} from "../globals.js";
+import {log} from "../logger.js";
 
 const hideTasksIcon = async () => {
+  log({source: 'hideTasksIcon', message: 'Hide tasks icon'});
+
   let region = await findInRegion({
     top: screenHeight - 50,
     width: Math.floor(screenWidth / 2),
