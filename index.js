@@ -3,7 +3,7 @@ import '@nut-tree/template-matcher';
 import hideMeetingIcon from "./functions/hideMeetingIcon.js";
 import hideSearchIcon from "./functions/hideSearchIcon.js";
 import hideTasksIcon from "./functions/hideTasksIcon.js";
-import {resetMouse, initStopListener, runOnBackGround} from "./globals.js";
+import {resetMouse, initStopListener, runOnBackGround, createTempDirIfNotExist} from "./globals.js";
 import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
 import hidePeopleIcon from "./functions/hidePeopleIcon.js";
 import {spawnSync} from 'child_process';
@@ -11,11 +11,14 @@ import renameComputer from "./functions/renameComputer.js";
 import installChocolatey from "./functions/installChocolatey.js";
 import installAppsFromChocolatey from "./functions/installAppsFromChocolatey.js";
 import {fullLog} from "./logger.js";
+import installVisualC from "./functions/installVisualC.js";
+import installDirectX from "./functions/installVisualDirectX.js";
 
 mouse.config.mouseSpeed = Infinity;
 
 const start = async () => {
   const abortListener = await initStopListener();
+  await createTempDirIfNotExist();
 
   // runOnBackGround(() => {
   //   installChocolatey().then(installAppsFromChocolatey);
@@ -39,6 +42,8 @@ const start = async () => {
   // await resetMouse();
   // await renameComputer();
 
+  // await installVisualC();
+  // await installDirectX();
 
   abortListener.kill();
 

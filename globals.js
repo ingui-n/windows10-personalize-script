@@ -12,6 +12,8 @@ import {
 import {AbortController} from "node-abort-controller";
 import {log} from "./logger.js";
 import {GlobalKeyboardListener} from "node-global-key-listener";
+import {PowerShell} from "node-powershell";
+import fs from "fs";
 
 const screenWidth = await screen.width();
 const screenHeight = await screen.height();
@@ -78,6 +80,35 @@ const runOnBackGround = (fun) => {
   setTimeout(fun, 0);
 };
 
+const getDownloadsPath = async () => {
+  let path;
+  const ps = new PowerShell();
+
+  await ps.invoke(`(New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path`)
+    .then(({raw}) => {
+      path = raw;
+    })
+    .catch(e => {
+      log({source: 'getDownloadsPath', message: e})
+    })
+    .finally(() => {
+      ps.dispose();
+    });
+
+  return path;
+};
+
+const getTempPath = async () => {
+  const downloadPath = await getDownloadsPath();
+  return downloadPath + '\\windows10-personalize-temp';
+};
+
+const createTempDirIfNotExist = async () => {
+  const downloadsPath = await getDownloadsPath();
+  const fullPath = downloadsPath + '\\windows10-personalize-temp';
+  !fs.existsSync(fullPath) ? fs.mkdirSync(fullPath) : undefined;
+};
+
 export {
   screenWidth,
   screenHeight,
@@ -86,5 +117,8 @@ export {
   resetMouse,
   initStopListener,
   isWindowSettings,
-  runOnBackGround
+  runOnBackGround,
+  getDownloadsPath,
+  createTempDirIfNotExist,
+  getTempPath
 };
