@@ -7,14 +7,15 @@ import {resetMouse, initStopListener} from "./globals.js";
 import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
 import hidePeopleIcon from "./functions/hidePeopleIcon.js";
 import {spawnSync} from 'child_process';
+import renameComputer from "./functions/renameComputer.js";
 
 mouse.config.mouseSpeed = Infinity;
 
 const start = async () => {
   const abortListener = await initStopListener();
 
-  await resetMouse();
-  await hideSearchIcon();
+  // await resetMouse();
+  // await hideSearchIcon();
 
   // await resetMouse();
   // await hideMeetingIcon();
@@ -27,6 +28,11 @@ const start = async () => {
 
   // await resetMouse();
   // await stopOneFingerTrigger();
+
+  // await resetMouse();
+  // await renameComputer();
+
+
 
   abortListener.kill();
 

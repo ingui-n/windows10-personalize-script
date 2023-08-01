@@ -1,4 +1,4 @@
-import {findInRegion, typeMultipleKeys} from "../globals.js";
+import {findInRegion, isWindowSettings, typeMultipleKeys} from "../globals.js";
 import {centerOf, getActiveWindow, Key, keyboard, mouse, sleep, straightTo} from "@nut-tree/nut-js";
 import {log} from "../logger.js";
 
@@ -104,13 +104,9 @@ const settingsWindowScript = async () => {
     await keyboard.releaseKey(Key.LeftAlt, Key.F4);
   }
 
-  return 1;
+  return true;
 };
 
-const isWindowSettings = async () => {
-  let windowTitle = await (await getActiveWindow()).title;
 
-  return (windowTitle.startsWith('Nastaven') || windowTitle.startsWith('Settings'));
-};
 
 export default settingsWindowScript;

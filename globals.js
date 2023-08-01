@@ -1,4 +1,5 @@
 import {
+  getActiveWindow,
   imageResource,
   keyboard,
   mouse,
@@ -67,4 +68,10 @@ const initStopListener = async () => {
   return listener;
 };
 
-export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, resetMouse, initStopListener};
+const isWindowSettings = async () => {
+  let windowTitle = await (await getActiveWindow()).title;
+
+  return (windowTitle.startsWith('Nastaven') || windowTitle.startsWith('Settings'));
+};
+
+export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, resetMouse, initStopListener, isWindowSettings};
