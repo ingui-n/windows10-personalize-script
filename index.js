@@ -1,11 +1,7 @@
 import {getActiveWindow, mouse} from '@nut-tree/nut-js';
 import '@nut-tree/template-matcher';
-import hideMeetingIcon from "./functions/hideMeetingIcon.js";
-import hideSearchIcon from "./functions/hideSearchIcon.js";
-import hideTasksIcon from "./functions/hideTasksIcon.js";
 import {resetMouse, initStopListener, runOnBackGround, createTempDirIfNotExist} from "./globals.js";
 import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
-import hidePeopleIcon from "./functions/hidePeopleIcon.js";
 import {spawnSync} from 'child_process';
 import renameComputer from "./functions/renameComputer.js";
 import installChocolatey from "./functions/installChocolatey.js";
@@ -14,6 +10,7 @@ import {fullLog} from "./logger.js";
 import installVisualC from "./functions/installVisualC.js";
 import installDirectX from "./functions/installVisualDirectX.js";
 import addWiFiEntry from "./functions/addWiFiEntry.js";
+import powerShellScript from "./functions/powerShellScript.js";
 
 mouse.config.mouseSpeed = Infinity;
 
@@ -26,18 +23,6 @@ const start = async () => {
   // });
 
   // await resetMouse();
-  // await hideSearchIcon();
-
-  // await resetMouse();
-  // await hideMeetingIcon();
-
-  // await resetMouse();
-  // await hidePeopleIcon();
-
-  // await resetMouse();
-  // await hideTasksIcon();
-
-  // await resetMouse();
   // await stopOneFingerTrigger();
 
   // await resetMouse();
@@ -46,6 +31,8 @@ const start = async () => {
   // await installVisualC();
   // await installDirectX();
   // await addWiFiEntry();
+
+  // await powerShellScript();
 
   abortListener.kill();
 

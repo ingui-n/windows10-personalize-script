@@ -17,11 +17,11 @@ const addWiFiEntry = async () => {
   const ps = new PowerShell();
 
   await ps.invoke(`
-  Copy-Item "software\\wifi-entry.xml" -Destination "${xmlPath}";
-  (Get-Content ${xmlPath}) | ForEach-Object { $_ -replace '{SSID}', '${process.env.WIFI_SSID}' } | Set-Content ${xmlPath};
-  (Get-Content ${xmlPath}) | ForEach-Object { $_ -replace '{PASSWORD}', '${process.env.WIFI_KEY}' } | Set-Content ${xmlPath};
-  netsh wlan add profile filename="${xmlPath}";
-  netsh wlan connect name="${process.env.WIFI_SSID}"
+    Copy-Item "software\\wifi-entry.xml" -Destination "${xmlPath}";
+    (Get-Content ${xmlPath}) | ForEach-Object { $_ -replace '{SSID}', '${process.env.WIFI_SSID}' } | Set-Content ${xmlPath};
+    (Get-Content ${xmlPath}) | ForEach-Object { $_ -replace '{PASSWORD}', '${process.env.WIFI_KEY}' } | Set-Content ${xmlPath};
+    netsh wlan add profile filename="${xmlPath}";
+    netsh wlan connect name="${process.env.WIFI_SSID}"
   `)
     .finally(() => {
       ps.dispose();
