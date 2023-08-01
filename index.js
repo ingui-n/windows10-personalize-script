@@ -13,6 +13,7 @@ import installAppsFromChocolatey from "./functions/installAppsFromChocolatey.js"
 import {fullLog} from "./logger.js";
 import installVisualC from "./functions/installVisualC.js";
 import installDirectX from "./functions/installVisualDirectX.js";
+import addWiFiEntry from "./functions/addWiFiEntry.js";
 
 mouse.config.mouseSpeed = Infinity;
 
@@ -44,6 +45,7 @@ const start = async () => {
 
   // await installVisualC();
   // await installDirectX();
+  // await addWiFiEntry();
 
   abortListener.kill();
 
