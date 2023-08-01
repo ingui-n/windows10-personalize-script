@@ -8,6 +8,7 @@ import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
 import hidePeopleIcon from "./functions/hidePeopleIcon.js";
 import {spawnSync} from 'child_process';
 import renameComputer from "./functions/renameComputer.js";
+import installChocolatey from "./functions/installChocolatey.js";
 
 mouse.config.mouseSpeed = Infinity;
 
@@ -32,6 +33,7 @@ const start = async () => {
   // await resetMouse();
   // await renameComputer();
 
+  await installChocolatey();
 
 
   abortListener.kill();
