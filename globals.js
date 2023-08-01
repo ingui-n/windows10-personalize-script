@@ -63,6 +63,8 @@ const initStopListener = async () => {
   });
 
   await listener.start();
+
+  return listener;
 };
 
 export {screenWidth, screenHeight, typeMultipleKeys, findInRegion, resetMouse, initStopListener};

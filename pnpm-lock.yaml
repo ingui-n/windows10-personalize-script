@@ -11,9 +11,6 @@ dependencies:
   '@nut-tree/template-matcher':
     specifier: ^2.0.0
     version: 2.0.0(@nut-tree/nut-js@3.1.2)
-  gkm:
-    specifier: ^0.2.0
-    version: 0.2.0
   node-abort-controller:
     specifier: ^3.1.1
     version: 3.1.1
@@ -663,10 +660,6 @@ packages:
       once: 1.4.0
     dev: false
 
-  /eventemitter2@0.4.14:
-    resolution: {integrity: sha512-K7J4xq5xAD5jHsGM5ReWXRTFa3JRGofHiMcVgQ8PRwgWxzjHpMWCIzsmyf60+mh8KLsqYPcjUMa0AC4hd6lPyQ==}
-    dev: false
-
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
     dev: false
@@ -739,12 +732,6 @@ packages:
 
   /github-from-package@0.0.0:
     resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==}
-    dev: false
-
-  /gkm@0.2.0:
-    resolution: {integrity: sha512-Lp8cZ90/PoPnn9aCqXWpnq8JuxgqveivNHO8nveDjH+ShUUNmY6x4IZuM0hTBqMk+oJAxxmrS//iw6vXOQPSZw==}
-    dependencies:
-      eventemitter2: 0.4.14
     dev: false
 
   /global@4.4.0:
