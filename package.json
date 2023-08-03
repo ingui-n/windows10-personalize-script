@@ -15,6 +15,7 @@
     "@nut-tree/nut-js": "^3.1.2",
     "@nut-tree/template-matcher": "^2.0.0",
     "dotenv": "^16.3.1",
+    "is-online": "^10.0.0",
     "node-abort-controller": "^3.1.1",
     "node-global-key-listener": "^0.1.1",
     "node-powershell": "^5.0.1",

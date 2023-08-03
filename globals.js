@@ -103,6 +103,33 @@ const createTempDirIfNotExist = async () => {
   !fs.existsSync(fullPath) ? fs.mkdirSync(fullPath) : undefined;
 };
 
+const execute = async (command = '', source = '') => {
+  const res = {ok: false, text: ''};
+
+  if (!command) {
+    log({source, message: 'Empty command'});
+    return res;
+  }
+
+  const ps = new PowerShell();
+
+  await ps.invoke(command)
+    .then(({raw}) => {
+      res.ok = true;
+      res.text = raw;
+    })
+    .catch(e => {
+      res.text = e;
+    })
+    .finally(() => {
+      ps.dispose();
+    });
+
+  log({source, message: res.text});
+
+  return res;
+};
+
 export {
   screenWidth,
   screenHeight,
@@ -113,5 +140,6 @@ export {
   runOnBackGround,
   getDownloadsPath,
   createTempDirIfNotExist,
-  getTempPath
+  getTempPath,
+  execute
 };

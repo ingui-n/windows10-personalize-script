@@ -6,8 +6,8 @@ import installChocolatey from "./installChocolatey.js";
 
 dotenv.config();
 
-const installAppsFromChocolatey = async () => {
-  log({source: 'installAppsFromChocolatey', message: 'Installing packages'});
+const installDriverBooster = async () => {
+  log({source: 'installDriverBooster', message: 'Installing DriverBooster'});
 
   if (!(await isChocolateyInstalled())) {
     const {ok} = await installChocolatey();
@@ -16,9 +16,9 @@ const installAppsFromChocolatey = async () => {
       return false;
   }
 
-  const res = await execute(`choco install ${process.env.CHOCO_APPS} -y`, 'installAppsFromChocolatey');
+  const res = await execute(`choco install driverbooster -y`, 'installDriverBooster');
 
   return res.ok;
 };
 
-export default installAppsFromChocolatey;
+export default installDriverBooster;

@@ -1,23 +1,11 @@
-import {PowerShell} from "node-powershell";
 import {log} from "../logger.js";
+import {execute} from "../globals.js";
 
 const installDirectX = async () => {
   log({source: 'installDirectX', message: 'Installing DirectX'});
 
-  let returnStatus = false;
-  const ps = new PowerShell();
+  const {ok} = await execute(`software\\dxwebsetup.exe /Q`, 'installDirectX');
 
-  await ps.invoke(`software\\dxwebsetup.exe /Q`)
-    .then(async () => {
-      returnStatus = true;
-    })
-    .catch((e) => {
-      log({source: 'installDirectX', message: e});
-    })
-    .finally(() => {
-      ps.dispose();
-    });
-
-  return returnStatus;
+  return ok;
 };
 export default installDirectX;
