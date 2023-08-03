@@ -1,21 +1,8 @@
-import {PowerShell} from "node-powershell";
+import {execute} from "../globals.js";
 
 const isChocolateyInstalled = async () => {
-  let isInstalled;
-  const ps = new PowerShell();
-
-  await ps.invoke(`C:\\ProgramData\\chocolatey\\choco.exe`)
-    .then(() => {
-      isInstalled = true;
-    })
-    .catch(() => {
-      isInstalled = false;
-    })
-    .finally(() => {
-      ps.dispose();
-    });
-
-  return isInstalled;
+  const {ok} = await execute(`C:\\ProgramData\\chocolatey\\choco.exe`);
+  return ok;
 };
 
 export default isChocolateyInstalled;

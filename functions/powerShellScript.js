@@ -1,14 +1,11 @@
-import {PowerShell} from "node-powershell";
+import {execute} from "../globals.js";
+import {log} from "../logger.js";
 
 const powerShellScript = async () => {
-  const ps = new PowerShell();
+  log({source: 'powerShellScript', message: 'Running ps1 script...'})
 
-  await ps.invoke(`functions\\script.ps1`)
-    .finally(() => {
-      ps.dispose();
-    });
-
-  return true;
+  const {ok} = await execute(`functions\\script.ps1`);
+  return ok;
 };
 
 export default powerShellScript;

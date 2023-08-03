@@ -1,6 +1,6 @@
 import {mouse} from '@nut-tree/nut-js';
 import '@nut-tree/template-matcher';
-import {initStopListener, createTempDirIfNotExist, runOnBackGround} from "./globals.js";
+import {initStopListener, createTempDirIfNotExist, runOnBackGround, resetMouse} from "./globals.js";
 import powerShellScript from "./functions/powerShellScript.js";
 import dotenv from 'dotenv';
 import installDriverBooster from "./functions/installDriverBooster.js";
@@ -17,6 +17,7 @@ mouse.config.mouseSpeed = Infinity;
 
 const start = async () => {
   const abortListener = await initStopListener();
+  await resetMouse();
   await createTempDirIfNotExist();
 
   if (process.env.ADD_WIFI_ENTRY === "1")
@@ -34,7 +35,7 @@ const start = async () => {
 
   if (process.env.INSTALL_DRIVER_BOOSTER === "1") {
     if (await isOnline()) {
-      runOnBackGround(installDriverBooster().then(driverBoosterListeners));
+      runOnBackGround(() => installDriverBooster().then(driverBoosterListeners));
     } else {
       log({source: 'start', message: 'No internet connection'});
     }
@@ -48,7 +49,7 @@ const start = async () => {
     }
   }
 
-  //abortListener.kill();
+  abortListener.kill();
 
   //   const region = new Region(Math.floor(screenWidth / 2), screenHeight - 50, Math.floor(screenWidth / 2), 50);
   // await screen.captureRegion('screenshot.png', region);

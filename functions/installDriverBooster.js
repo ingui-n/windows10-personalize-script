@@ -16,9 +16,9 @@ const installDriverBooster = async () => {
       return false;
   }
 
-  const res = await execute(`choco install driverbooster -y`, 'installDriverBooster');
+  const {ok} = await execute(`choco install driverbooster -y`, 'installDriverBooster');
 
-  return res.ok;
+  return ok;
 };
 
 export default installDriverBooster;

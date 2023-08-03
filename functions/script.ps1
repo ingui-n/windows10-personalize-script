@@ -1,4 +1,4 @@
-Get-Content ..\.env | ForEach-Object {
+Get-Content .env | ForEach-Object {
     $line = $_.Trim()
     if (-not $line.StartsWith("#"))
     {
@@ -6,6 +6,9 @@ Get-Content ..\.env | ForEach-Object {
         Set-Content "env:\$name" $value
     }
 }
+
+# synchonizes time
+w32tm /resync /force
 
 if ($env:MUTE_VOLUME -eq "1")
 {
@@ -39,7 +42,7 @@ if ($env:HIDE_MEET -eq "1")
 
 if ($env:SHOW_WINDOW_CONTENT_ON_DRAG -eq "1")
 {
-    # enmables show window contents while dragging
+    # enables show window contents while dragging
     Set-ItemProperty -Path HKCU:\\Control Panel\\Desktop -Name DragFullWindows -Value 1
 }
 
@@ -97,6 +100,9 @@ if ($env:CHANGE_WINDOWS_LOCALE -eq "1" -and $env:LOCALE -ne "" -and $env:LOCALE_
     Set-WinSystemLocale -SystemLocale "$env:LOCALE"
     Set-WinHomeLocation -GeoId $env:LOCALE_NUMBER
 }
+
+# synchonizes time
+w32tm /resync /force
 
 # isnatlls Chocolatey
 #Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
