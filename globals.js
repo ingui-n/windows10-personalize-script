@@ -70,12 +70,6 @@ const initStopListener = async () => {
   return listener;
 };
 
-const isWindowSettings = async () => {
-  let windowTitle = await (await getActiveWindow()).title;
-
-  return (windowTitle.startsWith('Nastaven') || windowTitle.startsWith('Settings'));
-};
-
 const runOnBackGround = (fun) => {
   setTimeout(fun, 0);
 };
@@ -116,7 +110,6 @@ export {
   findInRegion,
   resetMouse,
   initStopListener,
-  isWindowSettings,
   runOnBackGround,
   getDownloadsPath,
   createTempDirIfNotExist,

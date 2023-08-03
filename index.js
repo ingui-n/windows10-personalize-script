@@ -1,15 +1,6 @@
-import {getActiveWindow, mouse} from '@nut-tree/nut-js';
+import {mouse} from '@nut-tree/nut-js';
 import '@nut-tree/template-matcher';
-import {resetMouse, initStopListener, runOnBackGround, createTempDirIfNotExist} from "./globals.js";
-import stopOneFingerTrigger from "./functions/stopOneFingerTrigger.js";
-import {spawnSync} from 'child_process';
-import renameComputer from "./functions/renameComputer.js";
-import installChocolatey from "./functions/installChocolatey.js";
-import installAppsFromChocolatey from "./functions/installAppsFromChocolatey.js";
-import {fullLog} from "./logger.js";
-import installVisualC from "./functions/installVisualC.js";
-import installDirectX from "./functions/installVisualDirectX.js";
-import addWiFiEntry from "./functions/addWiFiEntry.js";
+import {initStopListener, createTempDirIfNotExist} from "./globals.js";
 import powerShellScript from "./functions/powerShellScript.js";
 
 mouse.config.mouseSpeed = Infinity;
@@ -32,7 +23,7 @@ const start = async () => {
   // await installDirectX();
   // await addWiFiEntry();
 
-  // await powerShellScript();
+  await powerShellScript();
 
   abortListener.kill();
 
