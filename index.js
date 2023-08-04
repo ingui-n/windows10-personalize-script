@@ -11,6 +11,7 @@ import addWiFiEntry from "./functions/addWiFiEntry.js";
 import isOnline from "is-online";
 import {log} from "./logger.js";
 import installAppsFromChocolatey from "./functions/installAppsFromChocolatey.js";
+import installOperaProfile from "./functions/installOperaProfile.js";
 
 dotenv.config();
 mouse.config.mouseSpeed = Infinity;
@@ -48,6 +49,9 @@ const start = async () => {
       log({source: 'start', message: 'No internet connection'});
     }
   }
+
+  if (process.env.INSTALL_OPERA_PROFILE === "1")
+    await installOperaProfile();
 
   abortListener.kill();
 
