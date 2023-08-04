@@ -51,6 +51,11 @@ const start = async () => {
 
   abortListener.kill();
 
+  //todo unpin all
+  //todo pin this pc
+  //todo set this pc to default
+  //todo show hidden files
+
   //   const region = new Region(Math.floor(screenWidth / 2), screenHeight - 50, Math.floor(screenWidth / 2), 50);
   // await screen.captureRegion('screenshot.png', region);
   // return ;
