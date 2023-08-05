@@ -1,5 +1,4 @@
 import {
-  getActiveWindow,
   imageResource,
   keyboard,
   mouse,
@@ -13,7 +12,6 @@ import {AbortController} from "node-abort-controller";
 import {log} from "./logger.js";
 import {GlobalKeyboardListener} from "node-global-key-listener";
 import {PowerShell} from "node-powershell";
-import fs from "fs";
 
 const screenWidth = await screen.width();
 const screenHeight = await screen.height();
@@ -92,17 +90,6 @@ const getDownloadsPath = async () => {
   return path;
 };
 
-const getTempPath = async () => {
-  const downloadPath = await getDownloadsPath();
-  return downloadPath + '\\windows10-personalize-temp';
-};
-
-const createTempDirIfNotExist = async () => {
-  const downloadsPath = await getDownloadsPath();
-  const fullPath = downloadsPath + '\\windows10-personalize-temp';
-  !fs.existsSync(fullPath) ? fs.mkdirSync(fullPath) : undefined;
-};
-
 const execute = async (command = '', source = '') => {
   const res = {ok: false, text: ''};
 
@@ -139,7 +126,5 @@ export {
   initStopListener,
   runOnBackGround,
   getDownloadsPath,
-  createTempDirIfNotExist,
-  getTempPath,
   execute
 };

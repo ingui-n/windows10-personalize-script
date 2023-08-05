@@ -4,7 +4,10 @@ import {log} from "../logger.js";
 const powerShellScript = async () => {
   log({source: 'powerShellScript', message: 'Running ps1 script...'})
 
-  const {ok} = await execute(`functions\\script.ps1`);
+  const {ok} = await execute(`
+    try {Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force} catch {};
+    functions\\script.ps1
+  `);
   return ok;
 };
 
