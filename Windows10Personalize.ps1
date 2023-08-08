@@ -10,7 +10,7 @@ function Show-InputBox
     $form.height = ($screenHeight - 50)
     $form.AutoScroll = $true
     $form.minimumSize = New-Object System.Drawing.Size(350, 350)
-    $form.maximumSize = New-Object System.Drawing.Size(350, 885)
+    $form.maximumSize = New-Object System.Drawing.Size(350, 870)
     $form.MaximizeBox = $false
 
     $form.Font = New-Object System.Drawing.Font("Arial", 10)
@@ -162,10 +162,17 @@ function Show-InputBox
     $checkboxDisableOneFinger.Checked = $true
     $form.Controls.Add($checkboxDisableOneFinger)
 
+    $checkboxSetThisPCDefault = new-object System.Windows.Forms.checkbox
+    $checkboxSetThisPCDefault.Location = new-object System.Drawing.Size(10, 520)
+    $checkboxSetThisPCDefault.Text = "Set default folder to This PC"
+    $checkboxSetThisPCDefault.width = 300
+    $checkboxSetThisPCDefault.Checked = $true
+    $form.Controls.Add($checkboxSetThisPCDefault)
+
 
     # Opera profile
     $checkboxInstallOperaProfile = new-object System.Windows.Forms.checkbox
-    $checkboxInstallOperaProfile.Location = new-object System.Drawing.Size(10, 520)
+    $checkboxInstallOperaProfile.Location = new-object System.Drawing.Size(10, 550)
     $checkboxInstallOperaProfile.Text = "Install Opera clean profile"
     $checkboxInstallOperaProfile.width = 300
     $checkboxInstallOperaProfile.Checked = $true
@@ -174,28 +181,28 @@ function Show-InputBox
 
     # Chocloatey
     $checkboxInstallChocolatey = new-object System.Windows.Forms.checkbox
-    $checkboxInstallChocolatey.Location = new-object System.Drawing.Size(10, 550)
+    $checkboxInstallChocolatey.Location = new-object System.Drawing.Size(10, 580)
     $checkboxInstallChocolatey.Text = "Install Chocolatey"
     $checkboxInstallChocolatey.width = 300
     $checkboxInstallChocolatey.Checked = $true
     $form.Controls.Add($checkboxInstallChocolatey)
 
     $checkboxInstallDriverBooster = new-object System.Windows.Forms.checkbox
-    $checkboxInstallDriverBooster.Location = new-object System.Drawing.Size(10, 580)
+    $checkboxInstallDriverBooster.Location = new-object System.Drawing.Size(10, 610)
     $checkboxInstallDriverBooster.Text = "Install Iobit Driver Booster"
     $checkboxInstallDriverBooster.width = 300
     $checkboxInstallDriverBooster.Checked = $true
     $form.Controls.Add($checkboxInstallDriverBooster)
 
     $labelChocolateyApps = New-Object System.Windows.Forms.Label
-    $labelChocolateyApps.Location = New-Object System.Drawing.Point(10, 610)
+    $labelChocolateyApps.Location = New-Object System.Drawing.Point(10, 640)
     $labelChocolateyApps.width = 300
     $labelChocolateyApps.Text = "Chocolatey apps to install:"
     $form.Controls.Add($labelChocolateyApps)
 
     $textChocolateyApps = New-Object System.Windows.Forms.TextBox
-    $textChocolateyApps.Location = New-Object System.Drawing.Point(10, 640)
-    $textChocolateyApps.Size = New-Object System.Drawing.Size(300, 150)
+    $textChocolateyApps.Location = New-Object System.Drawing.Point(10, 670)
+    $textChocolateyApps.Size = New-Object System.Drawing.Size(300, 100)
     $textChocolateyApps.Text = "opera vlc steam netlimiter deskpins anydesk lightshot discord intellijidea-ultimate eartrumpet translucenttb"
     $textChocolateyApps.Multiline = $true
     $textChocolateyApps.Scrollbars = "Vertical"
@@ -204,7 +211,7 @@ function Show-InputBox
 
 
     $buttonSubmit = New-Object System.Windows.Forms.Button
-    $buttonSubmit.Location = New-Object System.Drawing.Point(230, 800)
+    $buttonSubmit.Location = New-Object System.Drawing.Point(230, 790)
     $buttonSubmit.Size = New-Object System.Drawing.Size(75, 23)
     $buttonSubmit.Text = "Run"
     $buttonSubmit.DialogResult = [System.Windows.Forms.DialogResult]::OK
@@ -212,7 +219,7 @@ function Show-InputBox
     $form.AcceptButton = $buttonSubmit
 
     $padding = New-Object System.Windows.Forms.Label
-    $padding.Location = New-Object System.Drawing.Point(10, 820)
+    $padding.Location = New-Object System.Drawing.Point(10, 800)
     $form.Controls.Add($padding)
 
     $iconBase64 = 'AAABAAEAFBQAAAEAIACZBAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAUAAAAFAgGAAAAjYkdDQAABGBJREFUeJxdlAtMm1UUx78iT3lOhICgyCPhNckwZBMXlxlQqWgWzDQiSqkxkEXTwWIAR5XEEA3gTCuERkayGiuQzALdKFjYGMOVdx2jwNYKHRQWoAHW9CXEUvwf+Robv+SXc+659557v3POPQxz+B0Bp8EYSGVtjEgkUrMqBzzJ/PeVAF+PMXNwcHBkamoq2dN2B6T9b5EfhJefn99vkD+D9zzmZpqbm2chPwe/gx/i4+Mv0pwZPM7MzLwI48nU1NQzRUVFMnZThVgsVrW0tEj1er0qPT3dmZSU9FdKSspKW1vbWnJy8iTB4XDudXd3z7gPe6qgoGAem+/k5+eTo0vgLfAE8BcKhY7W1lZTTEzMGsbTYIFCgPWq0NDQ16G/RE56e3uXyAfd4tXR0dHFzc3NQrohe0gCUGdkZKj7+/v1sD8CnbCdDAkJuQr9/f39fa3D4bgL2wl2zx/uWPir1WqZTqebx2fb29u7S5vBcnt7+2paWtq23W7fwfhXg8Fwq66uzp2ofjBvMpnOYY4S1O0Z/+fABfaAU4ATFBR0DsNvIyIiHjidzrcrKir4RqNRU1xcPAr7FHgFKIA366PL7YzPSopZMLgBh8GRkZErrD0RQb8F6ePv7y+cmJiwy2Syj9m5yOjo6DKsj4HOdTv8t746Ojqej4uLexGqICAgoFMqlX4P/Q1AtfUMoKRo1tfXm7Va7TvQXwMNcHbMZrPpoZ/y/OXooaEhOSZfgH4V3AZfecx/Bn4ExwMDA6VKpXKHOSy3ruzsbPHW1lYb9nLdSZE2NjbmVVVVXYB+Pjw8/HpsbKyOdUQFPQx+Kikp0RcWFo6T0Wq13oOo9vHxycIegcfBsW6nk+A46EpISLAgfufJXl9fTwvsIAFzZ8LCwk5TdlEuyurqasvu7q5+ZGTEAFslc1g+LbTvMhYH0u3AUV9fX7OXlxeVQCJKZhUJ+CY3N5cWPl1ZWZna19e3urKy4uJyubOwfc0mI5GSWlpaqnFfNRinvYmM0aJr4Cy4AoZoEq+go6GhwTw2NvYYMZvZ2dnRosANiOUnqM1LFDZwc2Bg4JHb4dHa2loJHvsG4qPEpAYLLXi/TowdOMyB8d9ms/n+7OzsPuaVkDKBQNCPd3+Mz+fzUK88+OkhZ+9S8BUKRR82GaOiokzYUAqqAA8oNjY2xhFb6igqb2/vT7H+O/YilzE+kZOTk8/j8UQYP0vGD6hshoeHByCXampqriPTH8rl8hu43e3FxUXR9PS0GI1gGg5zXS7XFz09PWuoxYfLy8s6/KZtbm7ugQYf5noow+UgHs4+AhbwZVNTkxXF6sImCxyubW9vX5NIJH9SpoEQa3LBTeawf76Mw36B1KIPUMYZ6jBGsEExQAtbKisrM05OTlqRTWt5eTndXAseLiwskJ7OlloxlRplH+/eBNk5ODhIxc8IqMNAUi+kuKkAdeIR3HIc8n5eXh71QTkYARLahFudRZdao86dlZW1DZMX2f8Bj2eAF8PtWBoAAAAASUVORK5CYII='
@@ -258,7 +265,7 @@ function isDirectXInstalled()
 $EXITED, $RENAME_MACHINE, $DEVICE_NAME, $ADD_WIFI_ENTRY, $WIFI_SSID, $WIFI_KEY, $CHANGE_WINDOWS_LANG, $CHANGE_WINDOWS_KEYBOARD,
 $CHANGE_WINDOWS_LOCALE, $LOCALE, $LOCALE_NUMBER, $HIDE_SEARCH, $HIDE_TASKS, $HIDE_PEOPLE, $HIDE_MEET, $HIDE_NEWS,
 $SHOW_WINDOW_CONTENT_ON_DRAG, $DISABLE_ONE_FINGER_TRIGGER, $INSTALL_CHOCOLATEY, $INSTALL_DRIVER_BOOSTER,
-$CHOCO_APPS, $INSTALL_OPERA_PROFILE = Show-InputBox
+$CHOCO_APPS, $INSTALL_OPERA_PROFILE, $SET_DEFAULT_THIS_PC_VIEW = Show-InputBox
 
 if ($EXITED -eq $null)
 {
@@ -358,6 +365,12 @@ if ($SHOW_WINDOW_CONTENT_ON_DRAG)
 {
     # enables show window contents while dragging
     Set-ItemProperty -Path "HKCU:\\Control Panel\\Desktop" -Name "DragFullWindows" -Value 1
+}
+
+if ($SET_DEFAULT_THIS_PC_VIEW)
+{
+    # set the default launch folder to "This PC"
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Value 1
 }
 
 #renaming device
