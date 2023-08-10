@@ -1,3 +1,9 @@
+$DEFAULT_LOCALE = "cs-CZ"
+$DEFAULT_LOCALE_NUMBER = "75"
+$DEFAULT_TIMEZONE = "Central Europe Standard Time"
+$DEFAULT_CHOCO_APPS = "opera vlc steam netlimiter deskpins anydesk.install lightshot discord intellijidea-ultimate eartrumpet translucenttb"
+$WINDOWS_KEY = "W269N-WFGWX-YVC9B-4J6C9-T83GX"
+
 function Show-InputBox
 {
     Add-Type -AssemblyName System.Windows.Forms
@@ -10,7 +16,7 @@ function Show-InputBox
     $form.height = ($screenHeight - 50)
     $form.AutoScroll = $true
     $form.minimumSize = New-Object System.Drawing.Size(350, 350)
-    $form.maximumSize = New-Object System.Drawing.Size(350, 870)
+    $form.maximumSize = New-Object System.Drawing.Size(350, 885)
     $form.MaximizeBox = $false
 
     $form.Font = New-Object System.Drawing.Font("Arial", 10)
@@ -19,7 +25,7 @@ function Show-InputBox
     $checkboxRenamePC = new-object System.Windows.Forms.checkbox
     $checkboxRenamePC.Location = new-object System.Drawing.Size(10, 10)
     $checkboxRenamePC.Text = "Rename PC"
-    $checkboxRenamePC.Checked = $true
+    $checkboxRenamePC.Add_CheckStateChanged({ $textBoxPCName.enabled = $checkboxRenamePC.Checked })
     $form.Controls.Add($checkboxRenamePC)
 
     $labelPCName = New-Object System.Windows.Forms.Label
@@ -31,6 +37,7 @@ function Show-InputBox
     $textBoxPCName.Location = New-Object System.Drawing.Point(150, (40 - 3))
     $textBoxPCName.Text = ""
     $textBoxPCName.width = 150
+    $textBoxPCName.enabled = $false
     $form.Controls.Add($textBoxPCName)
 
 
@@ -39,7 +46,10 @@ function Show-InputBox
     $checkboxAddWiFi.Location = new-object System.Drawing.Size(10, 70)
     $checkboxAddWiFi.Text = "Add WiFi entry"
     $checkboxAddWiFi.width = 120
-    $checkboxAddWiFi.Checked = $true
+    $checkboxAddWiFi.Add_CheckStateChanged({
+        $textWiFiSSID.enabled = $checkboxAddWiFi.Checked
+        $textWiFiKey.enabled = $checkboxAddWiFi.Checked
+    })
     $form.Controls.Add($checkboxAddWiFi)
 
     $labelWiFiSSID = New-Object System.Windows.Forms.Label
@@ -51,6 +61,7 @@ function Show-InputBox
     $textWiFiSSID.Location = New-Object System.Drawing.Point(150, (100 - 3))
     $textWiFiSSID.Text = ""
     $textWiFiSSID.width = 150
+    $textWiFiSSID.enabled = $false
     $form.Controls.Add($textWiFiSSID)
 
     $labelWiFiKey = New-Object System.Windows.Forms.Label
@@ -62,148 +73,171 @@ function Show-InputBox
     $textWiFiKey.Location = New-Object System.Drawing.Point(150, (130 - 3))
     $textWiFiKey.Text = ""
     $textWiFiKey.width = 150
+    $textWiFiKey.enabled = $false
     $form.Controls.Add($textWiFiKey)
 
 
     # language
-    $checkboxChangeWindowsLanguage = new-object System.Windows.Forms.checkbox
-    $checkboxChangeWindowsLanguage.Location = new-object System.Drawing.Size(10, 160)
-    $checkboxChangeWindowsLanguage.Text = "Change Windows language"
-    $checkboxChangeWindowsLanguage.width = 300
-    $checkboxChangeWindowsLanguage.Checked = $true
-    $form.Controls.Add($checkboxChangeWindowsLanguage)
-
-    $checkboxChangeWindowsKeyboard = new-object System.Windows.Forms.checkbox
-    $checkboxChangeWindowsKeyboard.Location = new-object System.Drawing.Size(10, 190)
-    $checkboxChangeWindowsKeyboard.Text = "Change keyboard language"
-    $checkboxChangeWindowsKeyboard.width = 300
-    $checkboxChangeWindowsKeyboard.Checked = $true
-    $form.Controls.Add($checkboxChangeWindowsKeyboard)
-
-    $checkboxWindowsLocale = new-object System.Windows.Forms.checkbox
-    $checkboxWindowsLocale.Location = new-object System.Drawing.Size(10, 220)
-    $checkboxWindowsLocale.Text = "Change Windows locale"
-    $checkboxWindowsLocale.width = 300
-    $checkboxWindowsLocale.Checked = $true
-    $form.Controls.Add($checkboxWindowsLocale)
+    $checkboxSwitchLanguage = new-object System.Windows.Forms.checkbox
+    $checkboxSwitchLanguage.Location = new-object System.Drawing.Size(10, 160)
+    $checkboxSwitchLanguage.Text = "Change Windows language"
+    $checkboxSwitchLanguage.width = 300
+    $checkboxSwitchLanguage.Add_CheckStateChanged({
+        $textWindowsLocale.enabled = $checkboxSwitchLanguage.Checked
+        $textWindowsLocaleNumber.enabled = $checkboxSwitchLanguage.Checked
+        $textTimezone.enabled = $checkboxSwitchLanguage.Checked
+    })
+    $form.Controls.Add($checkboxSwitchLanguage)
 
     $labelWindowsLocale = New-Object System.Windows.Forms.Label
-    $labelWindowsLocale.Location = New-Object System.Drawing.Point(10, 250)
+    $labelWindowsLocale.Location = New-Object System.Drawing.Point(10, 190)
     $labelWindowsLocale.width = 130
     $labelWindowsLocale.Text = "Windows locale:"
     $form.Controls.Add($labelWindowsLocale)
 
     $textWindowsLocale = New-Object System.Windows.Forms.TextBox
-    $textWindowsLocale.Location = New-Object System.Drawing.Point(150, (250 - 3))
-    $textWindowsLocale.Text = "cs-CZ"
+    $textWindowsLocale.Location = New-Object System.Drawing.Point(150, (190 - 3))
+    $textWindowsLocale.Text = $DEFAULT_LOCALE
     $textWindowsLocale.width = 150
+    $textWindowsLocale.enabled = $false
     $form.Controls.Add($textWindowsLocale)
 
     $labelWindowsLocaleNumber = New-Object System.Windows.Forms.Label
-    $labelWindowsLocaleNumber.Location = New-Object System.Drawing.Point(10, 280)
+    $labelWindowsLocaleNumber.Location = New-Object System.Drawing.Point(10, 220)
     $labelWindowsLocaleNumber.width = 140
     $labelWindowsLocaleNumber.Text = "Windows locale num:"
     $form.Controls.Add($labelWindowsLocaleNumber)
 
     $textWindowsLocaleNumber = New-Object System.Windows.Forms.TextBox
-    $textWindowsLocaleNumber.Location = New-Object System.Drawing.Point(150, (280 - 3))
-    $textWindowsLocaleNumber.Text = "75"
+    $textWindowsLocaleNumber.Location = New-Object System.Drawing.Point(150, (220 - 3))
+    $textWindowsLocaleNumber.Text = $DEFAULT_LOCALE_NUMBER
     $textWindowsLocaleNumber.width = 150
+    $textWindowsLocaleNumber.enabled = $false
     $form.Controls.Add($textWindowsLocaleNumber)
+
+    $labelTimezone = New-Object System.Windows.Forms.Label
+    $labelTimezone.Location = New-Object System.Drawing.Point(10, 250)
+    $labelTimezone.width = 90
+    $labelTimezone.Text = "Time zone:"
+    $form.Controls.Add($labelTimezone)
+
+    $textTimezone = New-Object System.Windows.Forms.TextBox
+    $textTimezone.Location = New-Object System.Drawing.Point(100, (250 - 3))
+    $textTimezone.Text = $DEFAULT_TIMEZONE
+    $textTimezone.width = 200
+    $textTimezone.enabled = $false
+    $form.Controls.Add($textTimezone)
+
+
+    # activate Windows
+    $checkboxActivateWindows = new-object System.Windows.Forms.checkbox
+    $checkboxActivateWindows.Location = new-object System.Drawing.Size(10, 280)
+    $checkboxActivateWindows.Text = "Activate Windows"
+    $checkboxActivateWindows.width = 300
+    $checkboxActivateWindows.Add_CheckStateChanged({
+        $textBoxActivateWindows.enabled = $checkboxActivateWindows.Checked
+    })
+    $form.Controls.Add($checkboxActivateWindows)
+
+    $labelActivateWindows = New-Object System.Windows.Forms.Label
+    $labelActivateWindows.Location = New-Object System.Drawing.Point(10, 310)
+    $labelActivateWindows.Text = "Key:"
+    $labelActivateWindows.width = 35
+    $form.Controls.Add($labelActivateWindows)
+
+    $textBoxActivateWindows = New-Object System.Windows.Forms.TextBox
+    $textBoxActivateWindows.Location = New-Object System.Drawing.Point(50, (310 - 3))
+    $textBoxActivateWindows.Text = $WINDOWS_KEY
+    $textBoxActivateWindows.width = 250
+    $textBoxActivateWindows.enabled = $false
+    $form.Controls.Add($textBoxActivateWindows)
 
 
     # windows main panel
     $checkboxHideSearch = new-object System.Windows.Forms.checkbox
-    $checkboxHideSearch.Location = new-object System.Drawing.Size(10, 310)
-    $checkboxHideSearch.Text = "Hide search from main panel"
+    $checkboxHideSearch.Location = new-object System.Drawing.Size(10, 340)
+    $checkboxHideSearch.Text = "Hide search icon from main panel"
     $checkboxHideSearch.width = 300
-    $checkboxHideSearch.Checked = $true
     $form.Controls.Add($checkboxHideSearch)
 
     $checkboxHideTasks = new-object System.Windows.Forms.checkbox
-    $checkboxHideTasks.Location = new-object System.Drawing.Size(10, 340)
-    $checkboxHideTasks.Text = "Hide tasks from main panel"
+    $checkboxHideTasks.Location = new-object System.Drawing.Size(10, 370)
+    $checkboxHideTasks.Text = "Hide tasks icon from main panel"
     $checkboxHideTasks.width = 300
-    $checkboxHideTasks.Checked = $true
     $form.Controls.Add($checkboxHideTasks)
 
     $checkboxHidePeople = new-object System.Windows.Forms.checkbox
-    $checkboxHidePeople.Location = new-object System.Drawing.Size(10, 370)
-    $checkboxHidePeople.Text = "Hide people from main panel"
+    $checkboxHidePeople.Location = new-object System.Drawing.Size(10, 400)
+    $checkboxHidePeople.Text = "Hide people icon from main panel"
     $checkboxHidePeople.width = 300
-    $checkboxHidePeople.Checked = $true
     $form.Controls.Add($checkboxHidePeople)
 
     $checkboxHideMeet = new-object System.Windows.Forms.checkbox
-    $checkboxHideMeet.Location = new-object System.Drawing.Size(10, 400)
-    $checkboxHideMeet.Text = "Hide meet from main panel"
+    $checkboxHideMeet.Location = new-object System.Drawing.Size(10, 430)
+    $checkboxHideMeet.Text = "Hide meet icon from main panel"
     $checkboxHideMeet.width = 300
-    $checkboxHideMeet.Checked = $true
     $form.Controls.Add($checkboxHideMeet)
 
     $checkboxHideNews = new-object System.Windows.Forms.checkbox
-    $checkboxHideNews.Location = new-object System.Drawing.Size(10, 430)
-    $checkboxHideNews.Text = "Hide news from main panel"
+    $checkboxHideNews.Location = new-object System.Drawing.Size(10, 460)
+    $checkboxHideNews.Text = "Hide news icon from main panel"
     $checkboxHideNews.width = 300
-    $checkboxHideNews.Checked = $true
     $form.Controls.Add($checkboxHideNews)
 
     $checkboxShowDragContent = new-object System.Windows.Forms.checkbox
-    $checkboxShowDragContent.Location = new-object System.Drawing.Size(10, 460)
+    $checkboxShowDragContent.Location = new-object System.Drawing.Size(10, 490)
     $checkboxShowDragContent.Text = "Show window content on drag"
     $checkboxShowDragContent.width = 300
-    $checkboxShowDragContent.Checked = $true
     $form.Controls.Add($checkboxShowDragContent)
 
     $checkboxDisableOneFinger = new-object System.Windows.Forms.checkbox
-    $checkboxDisableOneFinger.Location = new-object System.Drawing.Size(10, 490)
+    $checkboxDisableOneFinger.Location = new-object System.Drawing.Size(10, 520)
     $checkboxDisableOneFinger.Text = "Disable one finger function trigger"
     $checkboxDisableOneFinger.width = 300
-    $checkboxDisableOneFinger.Checked = $true
     $form.Controls.Add($checkboxDisableOneFinger)
 
     $checkboxSetThisPCDefault = new-object System.Windows.Forms.checkbox
-    $checkboxSetThisPCDefault.Location = new-object System.Drawing.Size(10, 520)
+    $checkboxSetThisPCDefault.Location = new-object System.Drawing.Size(10, 550)
     $checkboxSetThisPCDefault.Text = "Set default folder to This PC"
     $checkboxSetThisPCDefault.width = 300
-    $checkboxSetThisPCDefault.Checked = $true
     $form.Controls.Add($checkboxSetThisPCDefault)
 
 
     # Opera profile
     $checkboxInstallOperaProfile = new-object System.Windows.Forms.checkbox
-    $checkboxInstallOperaProfile.Location = new-object System.Drawing.Size(10, 550)
+    $checkboxInstallOperaProfile.Location = new-object System.Drawing.Size(10, 580)
     $checkboxInstallOperaProfile.Text = "Install Opera clean profile"
     $checkboxInstallOperaProfile.width = 300
-    $checkboxInstallOperaProfile.Checked = $true
     $form.Controls.Add($checkboxInstallOperaProfile)
 
 
     # Chocloatey
     $checkboxInstallChocolatey = new-object System.Windows.Forms.checkbox
-    $checkboxInstallChocolatey.Location = new-object System.Drawing.Size(10, 580)
+    $checkboxInstallChocolatey.Location = new-object System.Drawing.Size(10, 610)
     $checkboxInstallChocolatey.Text = "Install Chocolatey"
     $checkboxInstallChocolatey.width = 300
-    $checkboxInstallChocolatey.Checked = $true
     $form.Controls.Add($checkboxInstallChocolatey)
 
     $checkboxInstallDriverBooster = new-object System.Windows.Forms.checkbox
-    $checkboxInstallDriverBooster.Location = new-object System.Drawing.Size(10, 610)
+    $checkboxInstallDriverBooster.Location = new-object System.Drawing.Size(10, 640)
     $checkboxInstallDriverBooster.Text = "Install Iobit Driver Booster"
     $checkboxInstallDriverBooster.width = 300
-    $checkboxInstallDriverBooster.Checked = $true
     $form.Controls.Add($checkboxInstallDriverBooster)
 
-    $labelChocolateyApps = New-Object System.Windows.Forms.Label
-    $labelChocolateyApps.Location = New-Object System.Drawing.Point(10, 640)
-    $labelChocolateyApps.width = 300
-    $labelChocolateyApps.Text = "Chocolatey apps to install:"
-    $form.Controls.Add($labelChocolateyApps)
+    $checkboxChocolateyApps = new-object System.Windows.Forms.checkbox
+    $checkboxChocolateyApps.Location = new-object System.Drawing.Size(10, 670)
+    $checkboxChocolateyApps.Text = "Install Chocolatey apps:"
+    $checkboxChocolateyApps.width = 300
+    $checkboxChocolateyApps.Add_CheckStateChanged({
+        $textChocolateyApps.enabled = $checkboxChocolateyApps.Checked
+    })
+    $form.Controls.Add($checkboxChocolateyApps)
 
     $textChocolateyApps = New-Object System.Windows.Forms.TextBox
-    $textChocolateyApps.Location = New-Object System.Drawing.Point(10, 670)
+    $textChocolateyApps.Location = New-Object System.Drawing.Point(10, 700)
     $textChocolateyApps.Size = New-Object System.Drawing.Size(300, 100)
-    $textChocolateyApps.Text = "opera vlc steam netlimiter deskpins anydesk lightshot discord intellijidea-ultimate eartrumpet translucenttb"
+    $textChocolateyApps.Text = $DEFAULT_CHOCO_APPS
+    $textChocolateyApps.enabled = $false
     $textChocolateyApps.Multiline = $true
     $textChocolateyApps.Scrollbars = "Vertical"
     $textChocolateyApps.Font = New-Object System.Drawing.Font("Arial", 11)
@@ -211,7 +245,7 @@ function Show-InputBox
 
 
     $buttonSubmit = New-Object System.Windows.Forms.Button
-    $buttonSubmit.Location = New-Object System.Drawing.Point(230, 790)
+    $buttonSubmit.Location = New-Object System.Drawing.Point(230, 810)
     $buttonSubmit.Size = New-Object System.Drawing.Size(75, 23)
     $buttonSubmit.Text = "Run"
     $buttonSubmit.DialogResult = [System.Windows.Forms.DialogResult]::OK
@@ -219,7 +253,7 @@ function Show-InputBox
     $form.AcceptButton = $buttonSubmit
 
     $padding = New-Object System.Windows.Forms.Label
-    $padding.Location = New-Object System.Drawing.Point(10, 800)
+    $padding.Location = New-Object System.Drawing.Point(10, 820)
     $form.Controls.Add($padding)
 
     $iconBase64 = 'AAABAAEAFBQAAAEAIACZBAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAUAAAAFAgGAAAAjYkdDQAABGBJREFUeJxdlAtMm1UUx78iT3lOhICgyCPhNckwZBMXlxlQqWgWzDQiSqkxkEXTwWIAR5XEEA3gTCuERkayGiuQzALdKFjYGMOVdx2jwNYKHRQWoAHW9CXEUvwf+Robv+SXc+659557v3POPQxz+B0Bp8EYSGVtjEgkUrMqBzzJ/PeVAF+PMXNwcHBkamoq2dN2B6T9b5EfhJefn99vkD+D9zzmZpqbm2chPwe/gx/i4+Mv0pwZPM7MzLwI48nU1NQzRUVFMnZThVgsVrW0tEj1er0qPT3dmZSU9FdKSspKW1vbWnJy8iTB4XDudXd3z7gPe6qgoGAem+/k5+eTo0vgLfAE8BcKhY7W1lZTTEzMGsbTYIFCgPWq0NDQ16G/RE56e3uXyAfd4tXR0dHFzc3NQrohe0gCUGdkZKj7+/v1sD8CnbCdDAkJuQr9/f39fa3D4bgL2wl2zx/uWPir1WqZTqebx2fb29u7S5vBcnt7+2paWtq23W7fwfhXg8Fwq66uzp2ofjBvMpnOYY4S1O0Z/+fABfaAU4ATFBR0DsNvIyIiHjidzrcrKir4RqNRU1xcPAr7FHgFKIA366PL7YzPSopZMLgBh8GRkZErrD0RQb8F6ePv7y+cmJiwy2Syj9m5yOjo6DKsj4HOdTv8t746Ojqej4uLexGqICAgoFMqlX4P/Q1AtfUMoKRo1tfXm7Va7TvQXwMNcHbMZrPpoZ/y/OXooaEhOSZfgH4V3AZfecx/Bn4ExwMDA6VKpXKHOSy3ruzsbPHW1lYb9nLdSZE2NjbmVVVVXYB+Pjw8/HpsbKyOdUQFPQx+Kikp0RcWFo6T0Wq13oOo9vHxycIegcfBsW6nk+A46EpISLAgfufJXl9fTwvsIAFzZ8LCwk5TdlEuyurqasvu7q5+ZGTEAFslc1g+LbTvMhYH0u3AUV9fX7OXlxeVQCJKZhUJ+CY3N5cWPl1ZWZna19e3urKy4uJyubOwfc0mI5GSWlpaqnFfNRinvYmM0aJr4Cy4AoZoEq+go6GhwTw2NvYYMZvZ2dnRosANiOUnqM1LFDZwc2Bg4JHb4dHa2loJHvsG4qPEpAYLLXi/TowdOMyB8d9ms/n+7OzsPuaVkDKBQNCPd3+Mz+fzUK88+OkhZ+9S8BUKRR82GaOiokzYUAqqAA8oNjY2xhFb6igqb2/vT7H+O/YilzE+kZOTk8/j8UQYP0vGD6hshoeHByCXampqriPTH8rl8hu43e3FxUXR9PS0GI1gGg5zXS7XFz09PWuoxYfLy8s6/KZtbm7ugQYf5noow+UgHs4+AhbwZVNTkxXF6sImCxyubW9vX5NIJH9SpoEQa3LBTeawf76Mw36B1KIPUMYZ6jBGsEExQAtbKisrM05OTlqRTWt5eTndXAseLiwskJ7OlloxlRplH+/eBNk5ODhIxc8IqMNAUi+kuKkAdeIR3HIc8n5eXh71QTkYARLahFudRZdao86dlZW1DZMX2f8Bj2eAF8PtWBoAAAAASUVORK5CYII='
@@ -232,12 +266,12 @@ function Show-InputBox
     if ($result -eq [System.Windows.Forms.DialogResult]::OK)
     {
         return $true, $checkboxRenamePC.Checked, $textBoxPCName.Text, $checkboxAddWiFi.Checked, $textWiFiSSID.Text,
-        $textWiFiKey.Text, $checkboxChangeWindowsLanguage.Checked, $checkboxChangeWindowsKeyboard.Checked,
-        $checkboxWindowsLocale.Checked, $textWindowsLocale.Text, $textWindowsLocaleNumber.Text,
-        $checkboxHideSearch.Checked, $checkboxHideTasks.Checked, $checkboxHidePeople.Checked,
-        $checkboxHideMeet.Checked, $checkboxHideNews.Checked, $checkboxShowDragContent.Checked,
-        $checkboxDisableOneFinger.Checked, $checkboxInstallChocolatey.Checked, $checkboxInstallDriverBooster.Checked,
-        $textChocolateyApps.Text, $checkboxInstallOperaProfile.Checked
+        $textWiFiKey.Text, $checkboxSwitchLanguage.Checked, $textWindowsLocale.Checked, $textWindowsLocaleNumber.Checked,
+        $textTimezone.Text, $checkboxActivateWindows.Checked, $checkboxHideSearch.Checked, $checkboxHideTasks.Checked,
+        $checkboxHidePeople.Checked, $checkboxHideMeet.Checked, $checkboxHideNews.Checked, $checkboxShowDragContent.Checked,
+        $checkboxDisableOneFinger.Checked, $checkboxSetThisPCDefault.checked, $checkboxInstallChocolatey.Checked,
+        $checkboxInstallDriverBooster.Checked, $checkboxChocolateyApps.checked, $textChocolateyApps.Text,
+        $checkboxInstallOperaProfile.Checked
     }
 }
 
@@ -262,12 +296,37 @@ function isDirectXInstalled()
     return $directxVersion.Version -eq "4.09.0000.0904" -or $directxVersion.Version -eq "4.09.00.0904"
 }
 
-$EXITED, $RENAME_MACHINE, $DEVICE_NAME, $ADD_WIFI_ENTRY, $WIFI_SSID, $WIFI_KEY, $CHANGE_WINDOWS_LANG, $CHANGE_WINDOWS_KEYBOARD,
-$CHANGE_WINDOWS_LOCALE, $LOCALE, $LOCALE_NUMBER, $HIDE_SEARCH, $HIDE_TASKS, $HIDE_PEOPLE, $HIDE_MEET, $HIDE_NEWS,
-$SHOW_WINDOW_CONTENT_ON_DRAG, $DISABLE_ONE_FINGER_TRIGGER, $INSTALL_CHOCOLATEY, $INSTALL_DRIVER_BOOSTER,
-$CHOCO_APPS, $INSTALL_OPERA_PROFILE, $SET_DEFAULT_THIS_PC_VIEW = Show-InputBox
+function disableOneFingerTrigger()
+{
+    $MethodDefinition = @'
+[StructLayout(LayoutKind.Sequential)]
+public struct STICKYKEYS
+{
+    public uint cbSize;
+    public int dwFlags;
+}
 
-if ($EXITED -eq $null)
+[DllImport("user32.dll")]
+public static extern int SystemParametersInfo(int uiAction, int uiParam, out STICKYKEYS pvParam, int fWinIni);
+'@
+    $get = 0x003A
+    $set = 0x003B
+    Add-Type -MemberDefinition $MethodDefinition -Name 'Win32' -NameSpace '' -PassThru | Out-Null
+    $startupStickyKeys = New-Object -TypeName 'Win32+STICKYKEYS'
+    $startupStickyKeys.cbSize = [System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys)
+    [Win32]::SystemParametersInfo($get,[System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys), [ref]$startupStickyKeys, 0) | Out-Null
+    $startupStickyKeys.dwFlags = 506
+    [Win32]::SystemParametersInfo($set,[System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys), [ref]$startupStickyKeys, 0) | Out-Null
+}
+
+
+$EXITED, $RENAME_MACHINE, $DEVICE_NAME, $ADD_WIFI_ENTRY, $WIFI_SSID, $WIFI_KEY, $SWITCH_SYSTEM_LANG, $LOCALE,
+$LOCALE_NUMBER, $TIMEZONE, $ACTIVATE_WINDOWS, $HIDE_SEARCH, $HIDE_TASKS, $HIDE_PEOPLE, $HIDE_MEET, $HIDE_NEWS,
+$SHOW_WINDOW_CONTENT_ON_DRAG, $DISABLE_ONE_FINGER_TRIGGER, $SET_DEFAULT_THIS_PC_VIEW, $INSTALL_CHOCOLATEY,
+$INSTALL_DRIVER_BOOSTER, $INSTALL_CHOCO_APPS, $CHOCO_APPS, $INSTALL_OPERA_PROFILE = Show-InputBox
+
+# if true -> window was closed X
+if ($null -eq $EXITED)
 {
     return
 }
@@ -329,31 +388,28 @@ if ($INSTALL_CHOCOLATEY -and $isOnline)
     installChocolatey
 }
 
-# synchonizes time
-#w32tm /resync /force
-
 if ($HIDE_SEARCH)
 {
     # removes search icon
-    Set-ItemProperty -Path HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Search -Name SearchBoxTaskbarMode -Value 0 -Type DWord -Force
+    Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Search" -Name "SearchBoxTaskbarMode" -Value 0 -Type DWord -Force
 }
 
 if ($HIDE_TASKS)
 {
     # removes tasks icon
-    Set-ItemProperty -Path HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced -Name ShowTaskViewButton -Type DWord -Value 0
+    Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
 }
 
 if ($HIDE_PEOPLE)
 {
     # removes people icon
-    Set-ItemProperty -Path HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\People -Name PeopleBand -Value 0 -Type DWord
+    Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\People" -Name "PeopleBand" -Value 0 -Type DWord
 }
 
 if ($HIDE_MEET)
 {
     # removes meet now icon
-    Set-ItemProperty -Path HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer -Name HideSCAMeetNow -Value 1
+    Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer" -Name "HideSCAMeetNow" -Value 1
 }
 
 if ($HIDE_NEWS)
@@ -384,42 +440,35 @@ Stop-Process -Name "explorer" -Force
 
 if ($DISABLE_ONE_FINGER_TRIGGER)
 {
-    # disbales trigger for one finger prompt
-    $startupStickyKeys = New-Object -TypeName 'Win32+STICKYKEYS'
-    $startupStickyKeys.cbSize = [System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys)
-    $startupStickyKeys.dwFlags = 506
-    [Win32]::SystemParametersInfo(0x003B,[System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys), [ref]$startupStickyKeys, 0)
+    # disables trigger for one finger prompt
+    disableOneFingerTrigger
 }
 
-if ($CHANGE_WINDOWS_LANG -and "" -ne $LOCALE)
+if ($SWITCH_WINDOWS_LANGUAGE -and "" -ne $LOCALE -and "" -ne $LOCALE_NUMBER)
 {
-    # set language to czech
-    $LanguageList = Get-WinUserLanguageList
-    $LanguageList.Add("$LOCALE")
-
-    if ($CHANGE_WINDOWS_KEYBOARD)
-    {
-        # set keyboard to czech
-        Set-WinUserLanguageList -LanguageList $LanguageList -Force
-    }
-}
-
-if ($CHANGE_WINDOWS_LOCALE -and "" -ne $LOCALE -and "" -ne $LOCALE_NUMBER)
-{
-    # switch loacale
-    Set-WinSystemLocale -SystemLocale "$LOCALE"
+    # switches language
+    Set-WinUserLanguageList -LanguageList $LOCALE -Force
+    Set-WinSystemLocale -SystemLocale $LOCALE
     Set-WinHomeLocation -GeoId $LOCALE_NUMBER
+    tzutil /s $TIMEZONE
+}
+
+if ($ACTIVATE_WINDOWS -and "" -ne $WINDOWS_KEY)
+{
+    slmgr //b /ipk $WINDOWS_KEY
+    slmgr //b /skms kms8.msguides.com
+    slmgr //b /ato
 }
 
 if ($INSTALL_OPERA_PROFILE)
 {
-    $destination = "$APPDATA\Opera Software"
+    $destination = "$env:APPDATA\Opera Software"
     $filePath = $tempPath + "opera-stable-profile.zip"
     Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/opera-stable-profile.zip" -OutFile "$filePath"
 
     if (!(Test-Path -Path $destination))
     {
-        New-Item -ItemType Directory -Path $destination
+        New-Item -ItemType Directory -Path $destination | Out-Null
     }
 
     Expand-Archive -Path $filePath -DestinationPath $destination
@@ -442,10 +491,8 @@ if ($CHOCO_APPS -ne "")
         installChocolatey
     }
 
-    choco install $CHOCO_APPS -y
+    $command = "choco install $CHOCO_APPS -y"
+    Invoke-Expression $command
 }
 
 Remove-Item -Path $tempPath -Recurse
-
-# synchonizes time
-#w32tm /resync /force
