@@ -284,6 +284,7 @@ function installChocolatey()
 {
     if (!(isChocolateyInstalled))
     {
+        writeOut "Installing Chocolatey..."
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
         Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -319,6 +320,10 @@ public static extern int SystemParametersInfo(int uiAction, int uiParam, out STI
     [Win32]::SystemParametersInfo($set,[System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys), [ref]$startupStickyKeys, 0) | Out-Null
 }
 
+function writeOut($text) {
+    Write-Output $text
+}
+
 
 $EXITED, $RENAME_MACHINE, $DEVICE_NAME, $ADD_WIFI_ENTRY, $WIFI_SSID, $WIFI_KEY, $SWITCH_SYSTEM_LANG, $LOCALE,
 $LOCALE_NUMBER, $TIMEZONE, $ACTIVATE_WINDOWS, $HIDE_SEARCH, $HIDE_TASKS, $HIDE_PEOPLE, $HIDE_MEET, $HIDE_NEWS,
@@ -336,11 +341,13 @@ $tempPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads
 
 if (!(Test-Path -Path $tempPath))
 {
+    writeOut "Creating temp path in $tempPath"
     New-Item -ItemType Directory -Path $tempPath | Out-Null
 }
 
 if ($ADD_WIFI_ENTRY -and "" -ne $WIFI_SSID -and "" -ne $WIFI_KEY)
 {
+    writeOut "Adding new WiFI entry..."
     $filePath = $tempPath + $WIFI_SSID
     Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/wifi-entry.xml" -OutFile "$filePath"
 
@@ -354,7 +361,7 @@ $isOnline = Test-Connection -ComputerName "1.1.1.1" -Count 1 -Quiet
 
 if (!($isOnline))
 {
-    Write-Output "No internet connection!"
+    writeOut "WARNING: No internet connection!"
 }
 
 # Install Visual C++ if is not installed
@@ -366,6 +373,7 @@ if ($isOnline)
     # Check if either version is installed
     if ($vcx86 -eq $false -and $vcx64 -eq $false)
     {
+        writeOut "Installing Visual c++ AIO..."
         $filePath = $tempPath + "VisualCppRedist_AIO_x86_x64.exe"
         Invoke-WebRequest -Uri "https://github.com/abbodi1406/vcredist/releases/download/v0.73.0/VisualCppRedist_AIO_x86_x64.exe" -OutFile "$filePath"
         $command = "$filePath /ai /gm2"
@@ -376,6 +384,7 @@ if ($isOnline)
 # installs directX if is not installed
 if (!(isDirectXInstalled))
 {
+    writeOut "Installing DirectX..."
     $filePath = $tempPath + "dxwebsetup.exe"
     Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/dxwebsetup.exe" -OutFile "$filePath"
     $command = "$filePath /Q"
@@ -390,41 +399,49 @@ if ($INSTALL_CHOCOLATEY -and $isOnline)
 
 if ($HIDE_SEARCH)
 {
+    writeOut "Hide the search icon..."
     # removes search icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Search" -Name "SearchBoxTaskbarMode" -Value 0 -Type DWord -Force
 }
 
 if ($HIDE_TASKS)
 {
+    writeOut "Hide the tasks icon..."
     # removes tasks icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
 }
 
 if ($HIDE_PEOPLE)
 {
+    writeOut "Hide the people icon..."
     # removes people icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\People" -Name "PeopleBand" -Value 0 -Type DWord
 }
 
 if ($HIDE_MEET)
 {
+    writeOut "Hide the meet icon..."
     # removes meet now icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer" -Name "HideSCAMeetNow" -Value 1
 }
 
 if ($HIDE_NEWS)
 {
+    writeOut "Hide the news icon..."
+    # removes news icon
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Value 2
 }
 
 if ($SHOW_WINDOW_CONTENT_ON_DRAG)
 {
+    writeOut "Turn on function: show window contents while dragging..."
     # enables show window contents while dragging
     Set-ItemProperty -Path "HKCU:\\Control Panel\\Desktop" -Name "DragFullWindows" -Value 1
 }
 
 if ($SET_DEFAULT_THIS_PC_VIEW)
 {
+    writeOut "Set This PC as the default in File Explorer..."
     # set the default launch folder to "This PC"
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Value 1
 }
@@ -432,20 +449,24 @@ if ($SET_DEFAULT_THIS_PC_VIEW)
 #renaming device
 if ($RENAME_MACHINE -and "" -ne $DEVICE_NAME)
 {
+    writeOut "Rename this PC..."
     Rename-Computer -NewName $DEVICE_NAME
 }
 
+writeOut "Restart explorer.exe..."
 # restarts explorer.exe
 Stop-Process -Name "explorer" -Force
 
 if ($DISABLE_ONE_FINGER_TRIGGER)
 {
+    writeOut "Disable one finger function trigger..."
     # disables trigger for one finger prompt
     disableOneFingerTrigger
 }
 
 if ($SWITCH_WINDOWS_LANGUAGE -and "" -ne $LOCALE -and "" -ne $LOCALE_NUMBER)
 {
+    writeOut "Switch language..."
     # switches language
     Set-WinUserLanguageList -LanguageList $LOCALE -Force
     Set-WinSystemLocale -SystemLocale $LOCALE
@@ -455,6 +476,7 @@ if ($SWITCH_WINDOWS_LANGUAGE -and "" -ne $LOCALE -and "" -ne $LOCALE_NUMBER)
 
 if ($ACTIVATE_WINDOWS -and "" -ne $WINDOWS_KEY)
 {
+    writeOut "Activate Windows..."
     slmgr //b /ipk $WINDOWS_KEY
     slmgr //b /skms kms8.msguides.com
     slmgr //b /ato
@@ -462,6 +484,7 @@ if ($ACTIVATE_WINDOWS -and "" -ne $WINDOWS_KEY)
 
 if ($INSTALL_OPERA_PROFILE)
 {
+    writeOut "Install Opera clean profile..."
     $destination = "$env:APPDATA\Opera Software"
     $filePath = $tempPath + "opera-stable-profile.zip"
     Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/opera-stable-profile.zip" -OutFile "$filePath"
@@ -481,18 +504,21 @@ if ($INSTALL_DRIVER_BOOSTER)
         installChocolatey
     }
 
+    writeOut "Install Driver Booster..."
     choco install driverbooster -y
 }
 
-if ($CHOCO_APPS -ne "")
+if ($INSTALL_CHOCO_APPS -and $CHOCO_APPS -ne "")
 {
     if (!(isChocolateyInstalled))
     {
         installChocolatey
     }
 
+    writeOut "Install Chocolatey app(s): $CHOCO_APPS..."
     $command = "choco install $CHOCO_APPS -y"
     Invoke-Expression $command
 }
 
+writeOut "Remove temp directory $tempPath"
 Remove-Item -Path $tempPath -Recurse
