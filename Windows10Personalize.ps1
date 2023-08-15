@@ -1,7 +1,7 @@
 $DEFAULT_LOCALE = "cs-CZ"
 $DEFAULT_LOCALE_NUMBER = "75"
 $DEFAULT_TIMEZONE = "Central Europe Standard Time"
-$DEFAULT_CHOCO_APPS = "opera vlc steam netlimiter deskpins anydesk.install lightshot discord intellijidea-ultimate eartrumpet translucenttb"
+$DEFAULT_CHOCO_APPS = "opera vlc steam netlimiter deskpins anydesk.install lightshot discord eartrumpet translucenttb"
 $WINDOWS_KEY = "W269N-WFGWX-YVC9B-4J6C9-T83GX"
 
 function Show-InputBox
@@ -41,7 +41,7 @@ function Show-InputBox
     $form.Controls.Add($textBoxPCName)
 
 
-    # add wifi entry
+    # add Wi-Fi entry
     $checkboxAddWiFi = new-object System.Windows.Forms.checkbox
     $checkboxAddWiFi.Location = new-object System.Drawing.Size(10, 70)
     $checkboxAddWiFi.Text = "Add WiFi entry"
@@ -211,7 +211,7 @@ function Show-InputBox
     $form.Controls.Add($checkboxInstallOperaProfile)
 
 
-    # Chocloatey
+    # Chocolatey
     $checkboxInstallChocolatey = new-object System.Windows.Forms.checkbox
     $checkboxInstallChocolatey.Location = new-object System.Drawing.Size(10, 610)
     $checkboxInstallChocolatey.Text = "Install Chocolatey"
@@ -275,6 +275,30 @@ function Show-InputBox
     }
 }
 
+function writeNotification($main, $second)
+{
+    $null = [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime]
+    $null = [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime]
+
+    [xml]$ToastTemplate = @"
+<toast>
+    <visual>
+        <binding template="ToastImageAndText03">
+            <text id="1">$main</text>
+            <text id="2">$second</text>
+            <image id="1" src="$PSScriptRoot\image.ico" />
+        </binding>
+    </visual>
+</toast>
+"@
+
+    $ToastXml = [Windows.Data.Xml.Dom.XmlDocument]::New()
+    $ToastXml.LoadXml($ToastTemplate.OuterXml)
+
+    $ToastMessage = [Windows.UI.Notifications.ToastNotification]::New($ToastXML)
+    [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Windows 10 Personalize").Show($ToastMessage)
+}
+
 function isChocolateyInstalled()
 {
     return Test-Path "C:\ProgramData\chocolatey\choco.exe"
@@ -284,10 +308,17 @@ function installChocolatey()
 {
     if (!(isChocolateyInstalled))
     {
-        writeOut "Installing Chocolatey..."
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        if (isOnline)
+        {
+            Set-ExecutionPolicy Bypass -Scope Process -Force
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+            Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        }
+        else
+        {
+            writeOut "Cannot install Chocolatey - no internet connection"
+            writeNotification "Cannot install Chocolatey" "No internet connection"
+        }
     }
 }
 
@@ -320,7 +351,55 @@ public static extern int SystemParametersInfo(int uiAction, int uiParam, out STI
     [Win32]::SystemParametersInfo($set,[System.Runtime.InteropServices.Marshal]::SizeOf($startupStickyKeys), [ref]$startupStickyKeys, 0) | Out-Null
 }
 
-function writeOut($text) {
+function addWiFiEntry()
+{
+    writeOut "Adding new Wi-Fi entry..."
+    $filePath = $tempPath + $WIFI_SSID
+
+    $text = "<?xml version='1.0'?>
+<WLANProfile xmlns='http://www.microsoft.com/networking/WLAN/profile/v1'>
+    <name>$WIFI_SSID</name>
+    <SSIDConfig>
+        <SSID>
+            <name>$WIFI_SSID</name>
+        </SSID>
+    </SSIDConfig>
+    <connectionType>ESS</connectionType>
+    <connectionMode>auto</connectionMode>
+    <MSM>
+        <security>
+            <authEncryption>
+                <authentication>WPA2PSK</authentication>
+                <encryption>AES</encryption>
+                <useOneX>false</useOneX>
+            </authEncryption>
+            <sharedKey>
+                <keyType>passPhrase</keyType>
+                <protected>false</protected>
+                <keyMaterial>$WIFI_KEY</keyMaterial>
+            </sharedKey>
+        </security>
+    </MSM>
+</WLANProfile>"
+
+    Set-Content -Path $filePath -Value $text
+    netsh wlan add profile filename = "$filePath" | Out-Null
+    netsh wlan connect name = "$WIFI_SSID" | Out-Null
+}
+
+function installChocoApp($app)
+{
+    $command = "choco install $app -y"
+    Invoke-Expression $command
+}
+
+function isOnline()
+{
+    return Test-Connection -ComputerName "1.1.1.1" -Count 1 -Quiet
+}
+
+function writeOut($text)
+{
     Write-Output $text
 }
 
@@ -336,8 +415,8 @@ if ($null -eq $EXITED)
     return
 }
 
-$isOnline = Test-Connection -ComputerName "1.1.1.1" -Count 1 -Quiet
 $tempPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path + "\windows10-personalize-temp\"
+$restartExplorer = $false
 
 if (!(Test-Path -Path $tempPath))
 {
@@ -345,21 +424,15 @@ if (!(Test-Path -Path $tempPath))
     New-Item -ItemType Directory -Path $tempPath | Out-Null
 }
 
-if ($ADD_WIFI_ENTRY -and "" -ne $WIFI_SSID -and "" -ne $WIFI_KEY)
+if ($ADD_WIFI_ENTRY -and "" -ne $WIFI_SSID)
 {
-    writeOut "Adding new WiFI entry..."
-    $filePath = $tempPath + $WIFI_SSID
-    Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/wifi-entry.xml" -OutFile "$filePath"
-
-    (Get-Content $filePath) | ForEach-Object { $_ -replace '{SSID}', $WIFI_SSID } | Set-Content $filePath
-    (Get-Content $filePath) | ForEach-Object { $_ -replace '{PASSWORD}', $WIFI_KEY } | Set-Content $filePath
-    netsh wlan add profile filename = "$filePath" | Out-Null
-    netsh wlan connect name = "$WIFI_SSID" | Out-Null
+    addWiFiEntry
+    writeNotification "Added new Wi-Fi entry"
+    Start-Sleep -s 5
 }
 
-$isOnline = Test-Connection -ComputerName "1.1.1.1" -Count 1 -Quiet
 
-if (!($isOnline))
+if (!(isOnline))
 {
     writeOut "WARNING: No internet connection!"
 }
@@ -368,12 +441,13 @@ if (!($isOnline))
 $vcx86 = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Microsoft Visual C++*" } | Select-Object DisplayName, DisplayVersion
 $vcx64 = Get-ItemProperty HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Microsoft Visual C++*" } | Select-Object DisplayName, DisplayVersion
 
-if ($isOnline)
+if (isOnline)
 {
     # Check if either version is installed
     if ($vcx86 -eq $false -and $vcx64 -eq $false)
     {
-        writeOut "Installing Visual c++ AIO..."
+        writeOut "Installing Visual C++ AIO..."
+        writeNotification "Installing Visual C++ AIO..."
         $filePath = $tempPath + "VisualCppRedist_AIO_x86_x64.exe"
         Invoke-WebRequest -Uri "https://github.com/abbodi1406/vcredist/releases/download/v0.73.0/VisualCppRedist_AIO_x86_x64.exe" -OutFile "$filePath"
         $command = "$filePath /ai /gm2"
@@ -385,6 +459,7 @@ if ($isOnline)
 if (!(isDirectXInstalled))
 {
     writeOut "Installing DirectX..."
+    writeNotification "Installing DirectX..."
     $filePath = $tempPath + "dxwebsetup.exe"
     Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/dxwebsetup.exe" -OutFile "$filePath"
     $command = "$filePath /Q"
@@ -392,8 +467,10 @@ if (!(isDirectXInstalled))
 }
 
 # installs chocolatey
-if ($INSTALL_CHOCOLATEY -and $isOnline)
+if ($INSTALL_CHOCOLATEY -and (isOnline))
 {
+    writeOut "Installing Chocolatey..."
+    writeNotification "Installing Chocolatey..."
     installChocolatey
 }
 
@@ -402,6 +479,7 @@ if ($HIDE_SEARCH)
     writeOut "Hide the search icon..."
     # removes search icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Search" -Name "SearchBoxTaskbarMode" -Value 0 -Type DWord -Force
+    $restartExplorer = $true
 }
 
 if ($HIDE_TASKS)
@@ -409,6 +487,7 @@ if ($HIDE_TASKS)
     writeOut "Hide the tasks icon..."
     # removes tasks icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
+    $restartExplorer = $true
 }
 
 if ($HIDE_PEOPLE)
@@ -416,6 +495,7 @@ if ($HIDE_PEOPLE)
     writeOut "Hide the people icon..."
     # removes people icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\People" -Name "PeopleBand" -Value 0 -Type DWord
+    $restartExplorer = $true
 }
 
 if ($HIDE_MEET)
@@ -423,6 +503,7 @@ if ($HIDE_MEET)
     writeOut "Hide the meet icon..."
     # removes meet now icon
     Set-ItemProperty -Path "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer" -Name "HideSCAMeetNow" -Value 1
+    $restartExplorer = $true
 }
 
 if ($HIDE_NEWS)
@@ -430,6 +511,7 @@ if ($HIDE_NEWS)
     writeOut "Hide the news icon..."
     # removes news icon
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Value 2
+    $restartExplorer = $true
 }
 
 if ($SHOW_WINDOW_CONTENT_ON_DRAG)
@@ -453,14 +535,18 @@ if ($RENAME_MACHINE -and "" -ne $DEVICE_NAME)
     Rename-Computer -NewName $DEVICE_NAME
 }
 
-writeOut "Restart explorer.exe..."
 # restarts explorer.exe
-Stop-Process -Name "explorer" -Force
+if ($restartExplorer)
+{
+    writeOut "Restart explorer.exe..."
+    Stop-Process -Name "explorer" -Force
+    Start-Sleep -s 5
+}
 
+# disables trigger for one finger prompt
 if ($DISABLE_ONE_FINGER_TRIGGER)
 {
     writeOut "Disable one finger function trigger..."
-    # disables trigger for one finger prompt
     disableOneFingerTrigger
 }
 
@@ -472,29 +558,55 @@ if ($SWITCH_WINDOWS_LANGUAGE -and "" -ne $LOCALE -and "" -ne $LOCALE_NUMBER)
     Set-WinSystemLocale -SystemLocale $LOCALE
     Set-WinHomeLocation -GeoId $LOCALE_NUMBER
     tzutil /s $TIMEZONE
+    Start-Sleep -s 1
 }
 
 if ($ACTIVATE_WINDOWS -and "" -ne $WINDOWS_KEY)
 {
-    writeOut "Activate Windows..."
-    slmgr //b /ipk $WINDOWS_KEY
-    slmgr //b /skms kms8.msguides.com
-    slmgr //b /ato
+    if (isOnline)
+    {
+        writeOut "Activate Windows..."
+        writeNotification "Activate Windows..."
+        slmgr //b /ipk $WINDOWS_KEY
+        slmgr //b /skms kms8.msguides.com
+        slmgr //b /ato
+    }
+    else
+    {
+        writeOut "Cannot activate Windows - no internet connection"
+        writeNotification "Cannot activate Windows" "No internet connection"
+    }
 }
 
 if ($INSTALL_OPERA_PROFILE)
 {
-    writeOut "Install Opera clean profile..."
-    $destination = "$env:APPDATA\Opera Software"
-    $filePath = $tempPath + "opera-stable-profile.zip"
-    Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/opera-stable-profile.zip" -OutFile "$filePath"
-
-    if (!(Test-Path -Path $destination))
+    if (isOnline)
     {
-        New-Item -ItemType Directory -Path $destination | Out-Null
-    }
+        writeOut "Install Opera clean profile..."
+        writeNotification "Install Opera clean profile..."
+        $destination = "$env:APPDATA\Opera Software"
+        $filePath = $tempPath + "opera-stable-profile.zip"
+        Invoke-WebRequest -Uri "https://github.com/ingui-n/windows10-personalize-script/raw/main/etc/opera-stable-profile.zip" -OutFile "$filePath"
 
-    Expand-Archive -Path $filePath -DestinationPath $destination
+        if (!(Test-Path -Path $destination))
+        {
+            New-Item -ItemType Directory -Path $destination | Out-Null
+        }
+        else
+        {
+            if (Test-Path -Path "$destination\Opera Stable")
+            {
+                Remove-Item -LiteralPath "$destination\Opera Stable" -Force -Recurse
+            }
+        }
+
+        Expand-Archive -Path $filePath -DestinationPath $destination
+    }
+    else
+    {
+        writeOut "Cannot install Opera clean profile - no internet connection"
+        writeNotification "Cannot install Opera clean profile" "No internet connection"
+    }
 }
 
 if ($INSTALL_DRIVER_BOOSTER)
@@ -504,8 +616,17 @@ if ($INSTALL_DRIVER_BOOSTER)
         installChocolatey
     }
 
-    writeOut "Install Driver Booster..."
-    choco install driverbooster -y
+    if (isOnline)
+    {
+        writeOut "Install Driver Booster..."
+        writeNotification "Install Driver Booster..."
+        choco install driverbooster -y
+    }
+    else
+    {
+        writeOut "Cannot install Driver Booster - no internet connection"
+        writeNotification "Cannot install Driver Booster" "No internet connection"
+    }
 }
 
 if ($INSTALL_CHOCO_APPS -and $CHOCO_APPS -ne "")
@@ -515,10 +636,32 @@ if ($INSTALL_CHOCO_APPS -and $CHOCO_APPS -ne "")
         installChocolatey
     }
 
-    writeOut "Install Chocolatey app(s): $CHOCO_APPS..."
-    $command = "choco install $CHOCO_APPS -y"
-    Invoke-Expression $command
+    if (isOnline)
+    {
+        foreach ($app in $CHOCO_APPS.split(" "))
+        {
+            writeOut "Installing $app..."
+            writeNotification "Installing $app..."
+            installChocoApp $app
+
+            Start-Sleep -s 3
+
+            $isInstalled = choco list | Select-String -Pattern "^$app\s"
+
+            if (!$isInstalled)
+            {
+                writeOut "Installation of $app failed"
+                writeNotification "Installation of $app failed"
+            }
+        }
+    }
+    else
+    {
+        writeOut "Cannot install $app - no internet connection"
+        writeNotification "Cannot install $app" "No internet connection"
+    }
 }
 
 writeOut "Remove temp directory $tempPath"
 Remove-Item -Path $tempPath -Recurse
+writeNotification "The script has finished"
