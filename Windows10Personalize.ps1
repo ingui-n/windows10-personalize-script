@@ -415,6 +415,8 @@ if ($null -eq $EXITED)
     return
 }
 
+writeNotification "The script is running on background"
+
 $tempPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path + "\windows10-personalize-temp\"
 $restartExplorer = $false
 
